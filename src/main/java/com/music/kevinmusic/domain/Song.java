@@ -4,15 +4,13 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @ToString
 @Entity
-public class Song implements Serializable {
+public class Song extends StatusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +28,5 @@ public class Song implements Serializable {
     private String information;
     private String album;
     private String language;
-    private Date createdAt;
-    private String createdBy;
-    private Date updatedAt;
-    private String updatedBy;
 
 }

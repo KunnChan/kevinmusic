@@ -1,11 +1,12 @@
 package com.music.kevinmusic.command;
 
+import com.music.kevinmusic.domain.ActivationStatus;
 import com.music.kevinmusic.domain.Role;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @ToString
@@ -17,7 +18,9 @@ public class UserCommand {
     private String name;
     private String note;
     private String password;
+    private String phone;
+    private String email;
 
-    private boolean isActive;
-    private List<Role> roles = new ArrayList<>();
+    private ActivationStatus activationStatus;
+    private Set<Role> roles = new HashSet<>();
 }

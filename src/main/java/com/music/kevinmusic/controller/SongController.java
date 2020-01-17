@@ -10,11 +10,11 @@ import com.music.kevinmusic.service.SongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/song")
 @Slf4j
 public class SongController {
 
@@ -25,7 +25,7 @@ public class SongController {
         this.songService = songService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/song/{id}")
     public Song get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song id " + id);
@@ -33,7 +33,7 @@ public class SongController {
         return songService.getSongById(id, information);
     }
 
-    @PostMapping("q")
+    @PostMapping("/song/q")
     public Page<Song> get(@RequestBody SongSingleRequest songSingleRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
@@ -42,7 +42,7 @@ public class SongController {
         return songService.getFilterOneQuery(songSingleRequest);
     }
 
-    @PostMapping("query")
+    @PostMapping("/song/query")
     public Page<Song> get(@RequestBody SongRequest songRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
@@ -51,7 +51,8 @@ public class SongController {
         return songService.getFilter(songRequest);
     }
 
-    @PostMapping("save")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @PostMapping("/shield/song/save")
     public Song saveOrUpdate(@RequestBody SongCommand songCommand,
                              @RequestHeader MultiValueMap<String, String> headers){
 

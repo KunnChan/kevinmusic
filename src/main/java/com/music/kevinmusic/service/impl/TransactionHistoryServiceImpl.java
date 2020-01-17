@@ -38,7 +38,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
     @Override
     public Page<TransactionHistory> getFilter(TransactionHistoryRequest historyRequest) {
 
-        PageRequest pageable = CustomCommon.getPageable(historyRequest.getPage());
+        PageRequest pageable = CustomCommon.getPageable(historyRequest.getPage(), "transactionDate");
         List<BooleanExpression> filters = getQuery(historyRequest);
 
         if(filters.isEmpty()){
@@ -56,7 +56,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
         QTransactionHistory historyQuery = QTransactionHistory.historyEntity;
         List<BooleanExpression> filters = new ArrayList<>();
         if(request.getId() != null){
-            filters.add(historyQuery.id.equalsIgnoreCase(request.getId().toString()));
+            filters.add(historyQuery.id.eq(request.getId()));
         }
         if (request.getFromDt() != null) {
             filters.add(historyQuery.transactionDate.goe(request.getFromDt()));

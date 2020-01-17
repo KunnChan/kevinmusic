@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/history")
+@RequestMapping("/zone/history")
 @Slf4j
 public class TransactionHistoryController {
 

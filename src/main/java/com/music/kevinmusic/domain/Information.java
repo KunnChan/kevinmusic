@@ -26,12 +26,16 @@ public class Information {
     private String deviceName;
     private String deviceId;
 
-    public Information(String userAgent, String acceptLanguage, String host, String latLon, String deviceName, String deviceId) {
+    private String deviceType;
+
+    public Information(String userAgent, String acceptLanguage, String host, String latLon,
+                       String deviceName, String deviceId, String deviceType) {
         this.userAgent = userAgent;
         this.acceptLanguage = acceptLanguage;
         this.host = host;
         this.latLon = latLon;
         this.deviceName = deviceName;
         this.deviceId = deviceId;
+        this.deviceType = deviceType;
     }
 }

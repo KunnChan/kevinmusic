@@ -8,6 +8,7 @@ import lombok.ToString;
 @ToString
 public class SongRequest {
 
+    private Long id;
     private String title;
     private String genre;
     private String artist;

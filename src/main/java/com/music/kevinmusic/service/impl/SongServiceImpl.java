@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -95,22 +94,22 @@ public class SongServiceImpl implements SongService {
         history.setInformation(information);
         if(song.getId() == null){
             // insert
-            song.setCreatedAt(new Date());
-            song.setCreatedBy("u1");
+        //    song.setCreatedAt(new Date());
+        //    song.setCreatedBy("u1");
 
-            history.setEventAction(EventAction.CREATE_USER);
+            history.setEventAction(EventAction.CREATE_SONG);
         }else{
             // update
             Song songForUpdate = songRepository.findById(song.getId())
                     .orElseThrow(() -> new NotFoundException("Song id not found for update : " + song.getId()));
 
-            song.setCreatedAt(songForUpdate.getCreatedAt());
-            song.setCreatedBy(songForUpdate.getCreatedBy());
+       //     song.setCreatedAt(songForUpdate.getCreatedAt());
+        //    song.setCreatedBy(songForUpdate.getCreatedBy());
 
-            history.setEventAction(EventAction.UPDATE_USER);
+            history.setEventAction(EventAction.UPDATE_SONG);
         }
-        song.setUpdatedAt(new Date());
-        song.setUpdatedBy("u1");
+     //   song.setUpdatedAt(new Date());
+     //   song.setUpdatedBy("u1");
 
         historyRepo.save(history);
         return songRepository.save(song);
@@ -134,6 +133,9 @@ public class SongServiceImpl implements SongService {
     private List<BooleanExpression> getQuery(SongRequest songRequest) {
         QSong songQuery = QSong.songEntity;
         List<BooleanExpression> filters = new ArrayList<>();
+        if(songRequest.getId() != null){
+            filters.add(songQuery.id.eq(songRequest.getId()));
+        }
         if(songRequest.getTitle() != null){
             filters.add(songQuery.title.equalsIgnoreCase(songRequest.getTitle()));
         }

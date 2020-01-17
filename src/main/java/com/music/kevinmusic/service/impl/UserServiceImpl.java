@@ -5,11 +5,13 @@ import com.music.kevinmusic.command.UserCommand;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.*;
 import com.music.kevinmusic.exception.NotFoundException;
+import com.music.kevinmusic.filter.QUser;
 import com.music.kevinmusic.repository.TransactionHistoryRepository;
 import com.music.kevinmusic.repository.UserRepository;
 import com.music.kevinmusic.request.UserRequest;
 import com.music.kevinmusic.service.UserService;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final TransactionHistoryRepository historyRepo;
+    private ModelMapper modelMapper;
     private Gson gson;
 
     @Autowired
@@ -33,6 +38,7 @@ public class UserServiceImpl implements UserService {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.historyRepo = historyRepo;
+        modelMapper = new ModelMapper();
         gson = new Gson();
     }
 
@@ -40,6 +46,17 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
+    }
+
+    @Override
+    public void saveAll(List<User> users) {
+
+        List<User> modifyUser = new ArrayList<>();
+        for (User user : users) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            modifyUser.add(user);
+        }
+        userRepo.saveAll(modifyUser);
     }
 
     @Override
@@ -88,31 +105,73 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User saveOrUpdate(UserCommand userCommand, Information information) {
-        return null;
+
+        User user = modelMapper.map(userCommand, User.class);
+        TransactionHistory history = new TransactionHistory(gson.toJson(userCommand));
+        history.setInformation(information);
+        if(user.getId() == null){
+            // insert
+         //   user.setCreatedAt(new Date());
+         //   user.setCreatedBy("u1");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            if(userCommand.getRoles().isEmpty()){
+                user.setRoles(new HashSet<>(Arrays.asList(new Role("USER"))));
+            }else{
+                user.setRoles(userCommand.getRoles());
+            }
+
+            history.setEventAction(EventAction.CREATE_USER);
+        }else{
+            // update
+            User userForUpdate = userRepo.findById(user.getId())
+                    .orElseThrow(() -> new NotFoundException("User id not found for update : " + user.getId()));
+
+            if(userCommand.getRoles().isEmpty()){
+                user.setRoles(userForUpdate.getRoles());
+            }else{
+                user.setRoles(userCommand.getRoles());
+            }
+            user.setPassword(userForUpdate.getPassword());
+        //    user.setCreatedAt(userForUpdate.getCreatedAt());
+        //    user.setCreatedBy(userForUpdate.getCreatedBy());
+
+            history.setEventAction(EventAction.UPDATE_USER);
+        }
+    //    user.setUpdatedAt(new Date());
+     //   user.setUpdatedBy("u1");
+
+        historyRepo.save(history);
+        return userRepo.save(user);
+
     }
 
     private List<BooleanExpression> getQuery(UserRequest userRequest) {
 
-        QUser qUser = QUser.user;
+        QUser qUser = QUser.userEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-//        if(userRequest.getName()!= null){
-//            filters.add(qUser.name.equalsIgnoreCase(userRequest.getName()));
-//        }
-//        if(userRequest.getUsername() != null){
-//            filters.add(qUser..equalsIgnoreCase(userRequest.getGenre()));
-//        }
-//        if(userRequest.getArtist() != null){
-//            filters.add(songQuery.artist.equalsIgnoreCase(userRequest.getArtist()));
-//        }
-//        if(userRequest.getAlbum() != null){
-//            filters.add(songQuery.album.equalsIgnoreCase(userRequest.getAlbum()));
-//        }
-//        if(userRequest.getLanguage() != null){
-//            filters.add(songQuery.language.equalsIgnoreCase(userRequest.getLanguage()));
-//        }
-//        if(userRequest.getInfo() != null){
-//            filters.add(songQuery.information.in(userRequest.getInfo()));
-//        }
+        if(userRequest.getId()!= null){
+            filters.add(qUser.id.eq(userRequest.getId()));
+        }
+        if(userRequest.getName()!= null){
+            filters.add(qUser.name.equalsIgnoreCase(userRequest.getName()));
+        }
+        if(userRequest.getUsername() != null){
+            filters.add(qUser.username.equalsIgnoreCase(userRequest.getUsername()));
+        }
+        if(userRequest.getPhone() != null){
+            filters.add(qUser.phone.equalsIgnoreCase(userRequest.getPhone()));
+        }
+        if(userRequest.getEmail() != null){
+            filters.add(qUser.email.equalsIgnoreCase(userRequest.getEmail()));
+        }
+        if(userRequest.getActivationStatus() != null){
+            filters.add(qUser.userStatus.equalsIgnoreCase(userRequest.getActivationStatus().toString()));
+        }
+        if(userRequest.getNote() != null){
+            filters.add(qUser.note.likeIgnoreCase(userRequest.getNote()));
+        }
+
         return filters;
     }
 

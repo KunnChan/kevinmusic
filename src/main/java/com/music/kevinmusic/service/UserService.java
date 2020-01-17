@@ -6,9 +6,13 @@ import com.music.kevinmusic.domain.User;
 import com.music.kevinmusic.request.UserRequest;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface UserService {
 
     void save(User user);
+
+    void saveAll(List<User> list);
 
     User getUserById(Long id, Information information);
 
@@ -17,6 +21,7 @@ public interface UserService {
     Page<User> getFilter(UserRequest userRequest);
 
     User saveOrUpdate(UserCommand userCommand, Information information);
+
 
 
 }
