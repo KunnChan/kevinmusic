@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,9 +18,6 @@ public class Song extends StatusEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
-    private Set<DownloadLink> downloadLinks = new HashSet<>();
-
     private String photoLink;
     private String title;
     private String genre;
@@ -28,5 +27,14 @@ public class Song extends StatusEntity {
     private String information;
     private String album;
     private String language;
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
+    private Set<DownloadLink> downloadLinks = new HashSet<>();
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
+    private List<Reaction> reactions = new ArrayList<>();
 
 }
