@@ -1,7 +1,0 @@
-package com.music.kevinmusic.controller;
-
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class DownloadHistoryController {
-}

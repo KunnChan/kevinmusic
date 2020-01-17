@@ -1,14 +1,11 @@
 package com.music.kevinmusic.repository;
 
-import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.domain.TransactionHistory;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface UserRepository extends PagingAndSortingRepository<User, Long>, QuerydslPredicateExecutor<User> {
-
-    Optional<User> findByUsername(String username);
+public interface TransactionHistoryRepository extends PagingAndSortingRepository<TransactionHistory, Long>,
+        QuerydslPredicateExecutor<TransactionHistory> {
 }

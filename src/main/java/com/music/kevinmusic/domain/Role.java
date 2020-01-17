@@ -3,21 +3,19 @@ package com.music.kevinmusic.domain;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 @Data
 @ToString
-@Entity
-public class DownloadLink {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    private Song song;
-
-    private String linkUrl;
 
     private String name;
 }
