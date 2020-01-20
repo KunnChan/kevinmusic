@@ -3,10 +3,11 @@ package com.music.kevinmusic.service.impl;
 import com.google.gson.Gson;
 import com.music.kevinmusic.command.SongCommand;
 import com.music.kevinmusic.common.CustomCommon;
-import com.music.kevinmusic.domain.EventAction;
+import com.music.kevinmusic.domain.Comment;
 import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.Song;
 import com.music.kevinmusic.domain.TransactionHistory;
+import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QSong;
 import com.music.kevinmusic.repository.SongRepository;
@@ -94,22 +95,31 @@ public class SongServiceImpl implements SongService {
         history.setInformation(information);
         if(song.getId() == null){
             // insert
-        //    song.setCreatedAt(new Date());
-        //    song.setCreatedBy("u1");
-
             history.setEventAction(EventAction.CREATE_SONG);
         }else{
             // update
             Song songForUpdate = songRepository.findById(song.getId())
                     .orElseThrow(() -> new NotFoundException("Song id not found for update : " + song.getId()));
 
-       //     song.setCreatedAt(songForUpdate.getCreatedAt());
-        //    song.setCreatedBy(songForUpdate.getCreatedBy());
-
             history.setEventAction(EventAction.UPDATE_SONG);
         }
-     //   song.setUpdatedAt(new Date());
-     //   song.setUpdatedBy("u1");
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
+
+    @Override
+    @Transactional
+    public Song giveComment(SongCommand songCommand, Information information) {
+
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.COMMENT);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        Comment comment = new Comment(songCommand.getComment());
+        song.addComment(comment);
 
         historyRepo.save(history);
         return songRepository.save(song);

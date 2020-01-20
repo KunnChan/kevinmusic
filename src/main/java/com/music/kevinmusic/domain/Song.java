@@ -1,17 +1,14 @@
 package com.music.kevinmusic.domain;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
-@ToString
-@Entity
+@Entity(name = "Song")
+@Table(name = "song")
 public class Song extends StatusEntity {
 
     @Id
@@ -26,15 +23,59 @@ public class Song extends StatusEntity {
     @Lob
     private String information;
     private String album;
+
     private String language;
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DownloadLink> downloadLinks = new HashSet<>();
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
-    private List<Reaction> reactions = new ArrayList<>();
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reaction> reactions = new HashSet<>();
 
+    public void addDownloadLink(DownloadLink downloadLink){
+        downloadLink.setSong(this);
+        this.downloadLinks.add(downloadLink);
+    }
+    public void removeDownloadLink(DownloadLink downloadLink){
+        downloadLinks.remove(downloadLink);
+        downloadLink.setSong(null);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setSong(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setSong(null);
+    }
+
+    public void addReaction(Reaction reaction){
+        reaction.setSong(this);
+        this.reactions.add(reaction);
+    }
+
+    public void removeReaction(Reaction reaction){
+        reactions.remove(reaction);
+        reaction.setSong(null);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "id=" + id +
+                ", photoLink='" + photoLink + '\'' +
+                ", title='" + title + '\'' +
+                ", genre='" + genre + '\'' +
+                ", artist='" + artist + '\'' +
+                ", information='" + information + '\'' +
+                ", album='" + album + '\'' +
+                ", language='" + language + '\'' +
+                '}';
+    }
 }

@@ -1,13 +1,17 @@
 package com.music.kevinmusic.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.music.kevinmusic.enums.UserReaction;
 import lombok.Data;
-import lombok.ToString;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
-@ToString
 @Entity
+@EqualsAndHashCode(exclude = {"song"})
+@NoArgsConstructor
 public class Reaction extends StatusEntity {
 
     @Id
@@ -17,11 +21,19 @@ public class Reaction extends StatusEntity {
     @Enumerated(value = EnumType.STRING)
     private UserReaction userReaction;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Song song;
 
-    @ManyToOne
-    private User user;
+    public Reaction(UserReaction userReaction) {
+        this.userReaction = userReaction;
+    }
 
-
+    @Override
+    public String toString() {
+        return "Reaction{" +
+                "id=" + id +
+                ", userReaction=" + userReaction +
+                '}';
+    }
 }

@@ -1,7 +1,7 @@
 package com.music.kevinmusic.request;
 
-import com.music.kevinmusic.domain.ActivationStatus;
 import com.music.kevinmusic.domain.Information;
+import com.music.kevinmusic.enums.ActivationStatus;
 import lombok.Data;
 import lombok.ToString;
 

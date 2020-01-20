@@ -1,5 +1,6 @@
 package com.music.kevinmusic.domain;
 
+import com.music.kevinmusic.enums.EventAction;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

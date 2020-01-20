@@ -10,7 +10,6 @@ import com.music.kevinmusic.service.SongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,13 +50,39 @@ public class SongController {
         return songService.getFilter(songRequest);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/shield/song/save")
     public Song saveOrUpdate(@RequestBody SongCommand songCommand,
                              @RequestHeader MultiValueMap<String, String> headers){
 
-        log.info("song saveOrUpdate => title : {}", songCommand);
+        log.info("song saveOrUpdate => {}", songCommand);
         Information information = CustomCommon.getBrowserInformation(headers);
         return songService.saveOrUpdate(songCommand, information);
+    }
+
+    @PostMapping("/shield/song/downloadlink")
+    public Song addDownloadLink(@RequestBody SongCommand songCommand,
+                             @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("song giveComment => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.giveComment(songCommand, information);
+    }
+
+    @PostMapping("/shield/song/comment")
+    public Song addComment(@RequestBody SongCommand songCommand,
+                            @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("song giveComment => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.giveComment(songCommand, information);
+    }
+
+    @PostMapping("/shield/song/reaction")
+    public Song addReaction(@RequestBody SongCommand songCommand,
+                           @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("song giveComment => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.giveComment(songCommand, information);
     }
 }

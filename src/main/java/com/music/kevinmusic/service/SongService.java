@@ -16,4 +16,6 @@ public interface SongService {
     Page<Song> getFilter(SongRequest songRequest);
 
     Song saveOrUpdate(SongCommand songCommand, Information information);
+
+    Song giveComment(SongCommand songCommand, Information information);
 }

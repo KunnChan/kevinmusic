@@ -1,8 +1,8 @@
 package com.music.kevinmusic.bootstrap;
 
-import com.music.kevinmusic.domain.ActivationStatus;
 import com.music.kevinmusic.domain.Role;
 import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.enums.ActivationStatus;
 import com.music.kevinmusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

@@ -1,6 +1,8 @@
 package com.music.kevinmusic.domain;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.music.kevinmusic.enums.ModeAction;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
@@ -23,6 +25,8 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
+
     @Lob
     private String content;
 
@@ -40,7 +44,9 @@ public class History {
     }
 
     public History(Object file, ModeAction action) {
-        Gson gson = new Gson();
+        String name = file.getClass().getName();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        this.name = name;
         this.content = gson.toJson(file);
         this.action = action;
     }

@@ -1,7 +1,7 @@
 package com.music.kevinmusic.service.impl;
 
-import com.music.kevinmusic.domain.ActivationStatus;
 import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.enums.ActivationStatus;
 import com.music.kevinmusic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

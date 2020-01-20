@@ -1,6 +1,7 @@
 package com.music.kevinmusic.command;
 
 import com.music.kevinmusic.domain.DownloadLink;
+import com.music.kevinmusic.enums.UserReaction;
 import lombok.Data;
 import lombok.ToString;
 
@@ -26,6 +27,9 @@ public class SongCommand {
     private String updatedBy;
 
     private String browserInfo;
+
+    private String comment;
+    private UserReaction userReaction;
 
     private Set<DownloadLink> downloadLinks = new HashSet<>();
 }

@@ -1,6 +1,7 @@
 package com.music.kevinmusic.domain;
 
 
+import com.music.kevinmusic.enums.ModeAction;
 import com.music.kevinmusic.service.impl.BeanUtil;
 
 import javax.persistence.EntityManager;

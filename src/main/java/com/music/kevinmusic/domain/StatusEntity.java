@@ -1,5 +1,6 @@
 package com.music.kevinmusic.domain;
 
+import com.music.kevinmusic.enums.ActivationStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
