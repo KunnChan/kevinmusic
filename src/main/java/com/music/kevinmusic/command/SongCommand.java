@@ -29,7 +29,9 @@ public class SongCommand {
     private String browserInfo;
 
     private String comment;
-    private UserReaction userReaction;
+    private UserReaction userReaction = UserReaction.LIKE;
+
+    private DownloadLink downloadLink;
 
     private Set<DownloadLink> downloadLinks = new HashSet<>();
 }

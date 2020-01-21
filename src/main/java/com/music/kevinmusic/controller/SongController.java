@@ -59,22 +59,19 @@ public class SongController {
         return songService.saveOrUpdate(songCommand, information);
     }
 
-    @PostMapping("/shield/song/downloadlink")
-    public Song addDownloadLink(@RequestBody SongCommand songCommand,
-                             @RequestHeader MultiValueMap<String, String> headers){
-
-        log.info("song giveComment => {}", songCommand);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.giveComment(songCommand, information);
-    }
-
+    /**
+     * must have admin access
+     * @param songCommand must include String comment
+     * @param headers
+     * @return
+     */
     @PostMapping("/shield/song/comment")
     public Song addComment(@RequestBody SongCommand songCommand,
-                            @RequestHeader MultiValueMap<String, String> headers){
+                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song giveComment => {}", songCommand);
         Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.giveComment(songCommand, information);
+        return songService.addComment(songCommand, information);
     }
 
     @PostMapping("/shield/song/reaction")
@@ -83,6 +80,37 @@ public class SongController {
 
         log.info("song giveComment => {}", songCommand);
         Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.giveComment(songCommand, information);
+        return songService.addReaction(songCommand, information);
+    }
+
+    /**
+     * must have admin access
+     * @param songCommand must include Set<DownloadLink> downloadLinks
+     * @param headers
+     * @return
+     */
+    @PostMapping("/zone/song/link/add")
+    public Song addDownloadLinks(@RequestBody SongCommand songCommand,
+                                 @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("add download links => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.addDownloadLinks(songCommand, information);
+    }
+
+
+    /**
+     * must have admin access
+     * @param songCommand must include DownloadLink downloadLink
+     * @param headers
+     * @return
+     */
+    @PostMapping("/zone/song/link/remove")
+    public Song removeDownloadLink(@RequestBody SongCommand songCommand,
+                                   @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("remove download link => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.removeDownloadLink(songCommand, information);
     }
 }

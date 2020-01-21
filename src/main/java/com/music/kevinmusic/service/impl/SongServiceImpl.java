@@ -3,10 +3,7 @@ package com.music.kevinmusic.service.impl;
 import com.google.gson.Gson;
 import com.music.kevinmusic.command.SongCommand;
 import com.music.kevinmusic.common.CustomCommon;
-import com.music.kevinmusic.domain.Comment;
-import com.music.kevinmusic.domain.Information;
-import com.music.kevinmusic.domain.Song;
-import com.music.kevinmusic.domain.TransactionHistory;
+import com.music.kevinmusic.domain.*;
 import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QSong;
@@ -98,8 +95,8 @@ public class SongServiceImpl implements SongService {
             history.setEventAction(EventAction.CREATE_SONG);
         }else{
             // update
-            Song songForUpdate = songRepository.findById(song.getId())
-                    .orElseThrow(() -> new NotFoundException("Song id not found for update : " + song.getId()));
+          //  Song songForUpdate = songRepository.findById(song.getId())
+          ///          .orElseThrow(() -> new NotFoundException("Song id not found for update : " + song.getId()));
 
             history.setEventAction(EventAction.UPDATE_SONG);
         }
@@ -110,21 +107,62 @@ public class SongServiceImpl implements SongService {
 
     @Override
     @Transactional
-    public Song giveComment(SongCommand songCommand, Information information) {
+    public Song addComment(SongCommand songCommand, Information information) {
 
-        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.COMMENT);
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.COMMENT_ADD);
         history.setInformation(information);
 
         Song song = songRepository.findById(songCommand.getId())
                 .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
 
-        Comment comment = new Comment(songCommand.getComment());
-        song.addComment(comment);
+        song.addComment(new Comment(songCommand.getComment()));
 
         historyRepo.save(history);
         return songRepository.save(song);
     }
 
+    @Override
+    public Song addDownloadLinks(SongCommand songCommand, Information information) {
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.DOWNLOAD_LINK_ADD);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        song.addDownloadLinks(songCommand.getDownloadLinks());
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
+
+    @Override
+    public Song removeDownloadLink(SongCommand songCommand, Information information) {
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.DOWNLOAD_LINK_REMOVE);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        song.removeDownloadLink(songCommand.getDownloadLink());
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
+
+    @Override
+    public Song addReaction(SongCommand songCommand, Information information) {
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.REACTION_ADD);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        Reaction reaction = new Reaction(songCommand.getUserReaction());
+        song.addReaction(reaction);
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
 
     private BooleanExpression getQuery(String q) {
         String query = q == null ? "" : q;

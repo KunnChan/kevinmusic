@@ -39,6 +39,11 @@ public class Song extends StatusEntity {
         downloadLink.setSong(this);
         this.downloadLinks.add(downloadLink);
     }
+    public void addDownloadLinks(Set<DownloadLink> downloadLinks){
+        for (DownloadLink downloadLink: downloadLinks) {
+            addDownloadLink(downloadLink);
+        }
+    }
     public void removeDownloadLink(DownloadLink downloadLink){
         downloadLinks.remove(downloadLink);
         downloadLink.setSong(null);

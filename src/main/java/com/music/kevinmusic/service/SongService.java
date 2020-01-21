@@ -17,5 +17,11 @@ public interface SongService {
 
     Song saveOrUpdate(SongCommand songCommand, Information information);
 
-    Song giveComment(SongCommand songCommand, Information information);
+    Song addComment(SongCommand songCommand, Information information);
+
+    Song addDownloadLinks(SongCommand songCommand, Information information);
+
+    Song addReaction(SongCommand songCommand, Information information);
+
+    Song removeDownloadLink(SongCommand songCommand, Information information);
 }
