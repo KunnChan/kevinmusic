@@ -1,6 +1,7 @@
 package com.music.kevinmusic.service.impl;
 
 import com.google.gson.Gson;
+import com.music.kevinmusic.command.PointCommand;
 import com.music.kevinmusic.command.UserCommand;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
@@ -47,12 +48,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepo.save(user);
-    }
-
-    @Override
     public void saveAll(List<User> users) {
 
         List<User> modifyUser = new ArrayList<>();
@@ -66,9 +61,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User getUserById(Long id, Information information) {
-        TransactionHistory history = new TransactionHistory("User Id : " + id, EventAction.SEARCH_USER_BY_ID);
-        history.setInformation(information);
-        historyRepo.save(history);
+    //    TransactionHistory history = new TransactionHistory("User Id : " + id, EventAction.SEARCH_USER_BY_ID);
+     //   history.setInformation(information);
+     //   historyRepo.save(history);
 
         return userRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("User is not found for id "+ id));
@@ -148,6 +143,42 @@ public class UserServiceImpl implements UserService {
         historyRepo.save(history);
         return userRepo.save(user);
 
+    }
+
+    @Transactional
+    @Override
+    public User addPoint(PointCommand pointCommand, Information information) {
+        User user = userRepo.findById(pointCommand.getUserId())
+                .orElseThrow(() -> new NotFoundException("User is not found for id " + pointCommand.getUserId()));
+        Double sum = user.getPoint() + pointCommand.getPoint();
+        user.setPoint(sum);
+
+        pointCommand.setPointAfterModify(sum);
+
+        TransactionHistory history = new TransactionHistory(gson.toJson(pointCommand), EventAction.POINT_ADD);
+        history.setInformation(information);
+        historyRepo.save(history);
+        return userRepo.save(user);
+    }
+
+    @Transactional
+    @Override
+    public User subPoint(PointCommand pointCommand, Information information) {
+        User user = userRepo.findById(pointCommand.getUserId())
+                .orElseThrow(() -> new NotFoundException("User is not found for id " + pointCommand.getUserId()));
+        Double sum = user.getPoint() - pointCommand.getPoint();
+
+        if(sum < 0 ){
+            throw new NotFoundException("Point not enough. existing point : "+ user.getPoint() + ", requesting point :" + pointCommand.getPoint());
+        }
+
+        user.setPoint(sum);
+        pointCommand.setPointAfterModify(sum);
+
+        TransactionHistory history = new TransactionHistory(gson.toJson(pointCommand), EventAction.POINT_ADD);
+        history.setInformation(information);
+        historyRepo.save(history);
+        return userRepo.save(user);
     }
 
     private List<BooleanExpression> getQuery(UserRequest userRequest) {

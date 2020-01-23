@@ -45,5 +45,7 @@ public class User extends StatusEntity {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
 
+    private Double point = 0d;
+
 
 }

@@ -1,5 +1,6 @@
 package com.music.kevinmusic.service;
 
+import com.music.kevinmusic.command.PointCommand;
 import com.music.kevinmusic.command.UserCommand;
 import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.User;
@@ -9,8 +10,6 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface UserService {
-
-    void save(User user);
 
     void saveAll(List<User> list);
 
@@ -23,5 +22,7 @@ public interface UserService {
     User saveOrUpdate(UserCommand userCommand, Information information);
 
 
+    User addPoint(PointCommand pointCommand, Information information);
 
+    User subPoint(PointCommand pointCommand, Information information);
 }
