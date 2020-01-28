@@ -26,6 +26,9 @@ public class Song extends StatusEntity {
 
     private String language;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Lyrics lyrics;
+
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DownloadLink> downloadLinks = new HashSet<>();
 
@@ -34,6 +37,11 @@ public class Song extends StatusEntity {
 
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Reaction> reactions = new HashSet<>();
+
+    public void setLyrics(Lyrics lyrics) {
+        this.lyrics = lyrics;
+        lyrics.setSong(this);
+    }
 
     public void addDownloadLink(DownloadLink downloadLink){
         downloadLink.setSong(this);

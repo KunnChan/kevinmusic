@@ -89,7 +89,7 @@ public class SongController {
      * @param headers
      * @return
      */
-    @PostMapping("/zone/song/link/add")
+    @PostMapping("/shield/song/link/add")
     public Song addDownloadLinks(@RequestBody SongCommand songCommand,
                                  @RequestHeader MultiValueMap<String, String> headers){
 
@@ -112,5 +112,20 @@ public class SongController {
         log.info("remove download link => {}", songCommand);
         Information information = CustomCommon.getBrowserInformation(headers);
         return songService.removeDownloadLink(songCommand, information);
+    }
+
+    /**
+     * must have admin access
+     * @param songCommand must include DownloadLink downloadLink
+     * @param headers
+     * @return
+     */
+    @PostMapping("/zone/song/lyrics/add")
+    public Song addLyric(@RequestBody SongCommand songCommand,
+                                   @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("add song lyric => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.addSongLyric(songCommand, information);
     }
 }

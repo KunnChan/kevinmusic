@@ -24,4 +24,6 @@ public interface SongService {
     Song addReaction(SongCommand songCommand, Information information);
 
     Song removeDownloadLink(SongCommand songCommand, Information information);
+
+    Song addSongLyric(SongCommand songCommand, Information information);
 }

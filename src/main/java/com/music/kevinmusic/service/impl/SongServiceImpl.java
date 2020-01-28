@@ -150,6 +150,20 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    public Song addSongLyric(SongCommand songCommand, Information information) {
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.LYRIC_UPDATE);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        song.setLyrics(new Lyrics(songCommand.getLyrics()));
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
+
+    @Override
     public Song addReaction(SongCommand songCommand, Information information) {
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.REACTION_ADD);
         history.setInformation(information);
