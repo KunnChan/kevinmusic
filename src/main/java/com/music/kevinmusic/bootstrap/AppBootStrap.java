@@ -48,6 +48,6 @@ public class AppBootStrap implements ApplicationListener<ContextRefreshedEvent> 
         list.add(user);
         list.add(admin);
 
-        userService.saveAll(list);
+       // userService.saveAll(list);
     }
 }
