@@ -7,6 +7,8 @@ import com.music.kevinmusic.request.SongRequest;
 import com.music.kevinmusic.request.SongSingleRequest;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface SongService {
 
     Song getSongById(Long id, Information information);
@@ -26,4 +28,10 @@ public interface SongService {
     Song removeDownloadLink(SongCommand songCommand, Information information);
 
     Song addSongLyric(SongCommand songCommand, Information information);
+
+    Song addDownload(SongCommand songCommand, Information information);
+
+    List<Song> getTop15Album(Information information);
+
+    Page<Song> getPopularSong(SongSingleRequest songSingleRequest);
 }

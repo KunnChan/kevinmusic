@@ -27,6 +27,7 @@ public class SongCommand {
     private String updatedBy;
 
     private String lyrics;
+    private String userInfo;
 
     private String browserInfo;
 

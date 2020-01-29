@@ -121,6 +121,7 @@ public class SongServiceImpl implements SongService {
         return songRepository.save(song);
     }
 
+    @Transactional
     @Override
     public Song addDownloadLinks(SongCommand songCommand, Information information) {
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.DOWNLOAD_LINK_ADD);
@@ -135,6 +136,7 @@ public class SongServiceImpl implements SongService {
         return songRepository.save(song);
     }
 
+    @Transactional
     @Override
     public Song removeDownloadLink(SongCommand songCommand, Information information) {
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.DOWNLOAD_LINK_REMOVE);
@@ -149,6 +151,7 @@ public class SongServiceImpl implements SongService {
         return songRepository.save(song);
     }
 
+    @Transactional
     @Override
     public Song addSongLyric(SongCommand songCommand, Information information) {
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.LYRIC_UPDATE);
@@ -163,6 +166,34 @@ public class SongServiceImpl implements SongService {
         return songRepository.save(song);
     }
 
+    @Transactional
+    @Override
+    public Song addDownload(SongCommand songCommand, Information information) {
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.LYRIC_UPDATE);
+        history.setInformation(information);
+
+        Song song = songRepository.findById(songCommand.getId())
+                .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
+
+        song.addDownload(new Download(songCommand.getUserInfo()));
+
+        historyRepo.save(history);
+        return songRepository.save(song);
+    }
+
+    @Override
+    public List<Song> getTop15Album(Information information) {
+
+        return null;
+    }
+
+    @Override
+    public Page<Song> getPopularSong(SongSingleRequest songSingleRequest) {
+
+        return null;
+    }
+
+    @Transactional
     @Override
     public Song addReaction(SongCommand songCommand, Information information) {
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.REACTION_ADD);

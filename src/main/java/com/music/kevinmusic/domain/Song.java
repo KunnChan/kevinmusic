@@ -38,6 +38,9 @@ public class Song extends StatusEntity {
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Reaction> reactions = new HashSet<>();
 
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Download> downloads = new HashSet<>();
+
     public void setLyrics(Lyrics lyrics) {
         this.lyrics = lyrics;
         lyrics.setSong(this);
@@ -52,6 +55,7 @@ public class Song extends StatusEntity {
             addDownloadLink(downloadLink);
         }
     }
+
     public void removeDownloadLink(DownloadLink downloadLink){
         downloadLinks.remove(downloadLink);
         downloadLink.setSong(null);
@@ -65,6 +69,11 @@ public class Song extends StatusEntity {
     public void removeComment(Comment comment) {
         comments.remove(comment);
         comment.setSong(null);
+    }
+
+    public void addDownload(Download download) {
+        downloads.add(download);
+        download.setSong(this);
     }
 
     public void addReaction(Reaction reaction){

@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 public class SongController {
@@ -31,6 +33,24 @@ public class SongController {
         Information information = CustomCommon.getBrowserInformation(headers);
         return songService.getSongById(id, information);
     }
+
+    @GetMapping("/song/top/album")
+    public List<Song> getTopAlbum(@RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("song get top album");
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.getTop15Album(information);
+    }
+
+    @PostMapping("/song/popular")
+    public Page<Song> getPopular(@RequestBody SongSingleRequest songSingleRequest,
+                          @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("get popular song : {}, ", songSingleRequest);
+        songSingleRequest.setInformation(CustomCommon.getBrowserInformation(headers));
+        return songService.getPopularSong(songSingleRequest);
+    }
+
 
     @PostMapping("/song/q")
     public Page<Song> get(@RequestBody SongSingleRequest songSingleRequest,
@@ -81,6 +101,15 @@ public class SongController {
         log.info("song giveComment => {}", songCommand);
         Information information = CustomCommon.getBrowserInformation(headers);
         return songService.addReaction(songCommand, information);
+    }
+
+    @PostMapping("/shield/song/download")
+    public Song addDownload(@RequestBody SongCommand songCommand,
+                            @RequestHeader MultiValueMap<String, String> headers){
+
+        log.info("song download => {}", songCommand);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.addDownload(songCommand, information);
     }
 
     /**
