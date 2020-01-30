@@ -1,6 +1,7 @@
 package com.music.kevinmusic.controller;
 
 import com.music.kevinmusic.command.SongCommand;
+import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.Song;
@@ -43,7 +44,7 @@ public class SongController {
     }
 
     @PostMapping("/song/popular")
-    public Page<Song> getPopular(@RequestBody SongSingleRequest songSingleRequest,
+    public SongPageDto getPopular(@RequestBody SongSingleRequest songSingleRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("get popular song : {}, ", songSingleRequest);
@@ -53,8 +54,8 @@ public class SongController {
 
 
     @PostMapping("/song/q")
-    public Page<Song> get(@RequestBody SongSingleRequest songSingleRequest,
-                          @RequestHeader MultiValueMap<String, String> headers){
+    public SongPageDto get(@RequestBody SongSingleRequest songSingleRequest,
+                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song specific query : {}, ", songSingleRequest);
         songSingleRequest.setInformation(CustomCommon.getBrowserInformation(headers));
@@ -62,7 +63,7 @@ public class SongController {
     }
 
     @PostMapping("/song/query")
-    public Page<Song> get(@RequestBody SongRequest songRequest,
+    public SongPageDto get(@RequestBody SongRequest songRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song advance query => {}", songRequest);

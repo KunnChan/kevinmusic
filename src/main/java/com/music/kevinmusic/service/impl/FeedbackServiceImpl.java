@@ -74,7 +74,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         history.setInformation(information);
 
         try{
-            notificationService.sendNotification(new Notification(feedback.getText(), feedback.getEmailOrphone()));
+            String title = feedback.getName() + " : " + feedback.getEmailOrphone();
+            notificationService.sendNotification(new Notification(feedback.getText(), title));
         }catch (Exception ex){
             log.error("Sending Mail error {} ", ex);
         }

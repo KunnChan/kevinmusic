@@ -19,10 +19,12 @@ public class Feedback extends StatusEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
     private String emailOrphone;
     private String text;
 
-    public Feedback(String emailOrphone, String text) {
+    public Feedback(String name, String emailOrphone, String text) {
+        this.name = name;
         this.emailOrphone = emailOrphone;
         this.text = text;
     }

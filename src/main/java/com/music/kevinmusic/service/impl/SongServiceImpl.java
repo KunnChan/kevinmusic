@@ -2,6 +2,8 @@ package com.music.kevinmusic.service.impl;
 
 import com.google.gson.Gson;
 import com.music.kevinmusic.command.SongCommand;
+import com.music.kevinmusic.command.SongDto;
+import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.*;
 import com.music.kevinmusic.enums.EventAction;
@@ -52,7 +54,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     @Transactional
-    public Page<Song> getFilterOneQuery(SongSingleRequest songSingleRequest) {
+    public SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest) {
 
         PageRequest pageable = CustomCommon.getPageable(songSingleRequest.getPage());
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
@@ -61,14 +63,14 @@ public class SongServiceImpl implements SongService {
         history.setInformation(songSingleRequest.getInformation());
         historyRepo.save(history);
 
-        if(filter == null) return songRepository.findAll(pageable);
+        if(filter == null) return pageToDto(songRepository.findAll(pageable));
 
-        return songRepository.findAll(filter, pageable);
+        return pageToDto(songRepository.findAll(filter, pageable));
     }
 
     @Override
     @Transactional
-    public Page<Song> getFilter(SongRequest songRequest) {
+    public SongPageDto getFilter(SongRequest songRequest) {
         PageRequest pageable = CustomCommon.getPageable(songRequest.getPage());
         List<BooleanExpression> filters = getQuery(songRequest);
 
@@ -77,13 +79,14 @@ public class SongServiceImpl implements SongService {
         historyRepo.save(history);
 
         if(filters.isEmpty()){
-            return songRepository.findAll(pageable);
+            return pageToDto(songRepository.findAll(pageable));
         }
+
         BooleanExpression filterExpression = filters.get(0);
         for (int i = 1; i <= filters.size() - 1; ++i) {
             filterExpression = filterExpression.and(filters.get(i));
         }
-        return songRepository.findAll(filterExpression, pageable);
+        return pageToDto(songRepository.findAll(filterExpression, pageable));
     }
 
     @Override
@@ -190,7 +193,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Page<Song> getPopularSong(SongSingleRequest songSingleRequest) {
+    public SongPageDto getPopularSong(SongSingleRequest songSingleRequest) {
 
         return null;
     }
@@ -215,12 +218,12 @@ public class SongServiceImpl implements SongService {
         if(query == null) return null;
 
        QSong songQuery = QSong.songEntity;
-       BooleanExpression filter = songQuery.album.equalsIgnoreCase(query)
-                .or(songQuery.artist.equalsIgnoreCase(query))
-                .or(songQuery.genre.equalsIgnoreCase(query))
+       BooleanExpression filter = songQuery.album.likeIgnoreCase(query)
+                .or(songQuery.artist.likeIgnoreCase(query))
+                .or(songQuery.genre.likeIgnoreCase(query))
                 .or(songQuery.information.likeIgnoreCase(query))
-                .or(songQuery.language.equalsIgnoreCase(query))
-                .or(songQuery.title.equalsIgnoreCase(query));
+                .or(songQuery.language.likeIgnoreCase(query))
+                .or(songQuery.title.likeIgnoreCase(query));
 
         return filter;
     }
@@ -228,28 +231,82 @@ public class SongServiceImpl implements SongService {
     private List<BooleanExpression> getQuery(SongRequest songRequest) {
         QSong songQuery = QSong.songEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-        if(songRequest.getId() != null){
-            filters.add(songQuery.id.eq(songRequest.getId()));
+        Long id = songRequest.getId();
+        if(id != null && !"".equals(id)){
+            filters.add(songQuery.id.eq(id));
         }
-        if(songRequest.getTitle() != null){
-            filters.add(songQuery.title.equalsIgnoreCase(songRequest.getTitle()));
+
+        String title = songRequest.getTitle();
+        if(isNotNull(title)){
+            filters.add(songQuery.title.likeIgnoreCase(title));
         }
-        if(songRequest.getGenre() != null){
-            filters.add(songQuery.genre.equalsIgnoreCase(songRequest.getGenre()));
+
+        String genre = songRequest.getGenre();
+        if(isNotNull(genre)){
+            filters.add(songQuery.genre.likeIgnoreCase(genre));
         }
-        if(songRequest.getArtist() != null){
-            filters.add(songQuery.artist.equalsIgnoreCase(songRequest.getArtist()));
+
+        String artist = songRequest.getArtist();
+        if(isNotNull(artist)){
+            filters.add(songQuery.artist.likeIgnoreCase(artist));
         }
-        if(songRequest.getAlbum() != null){
-            filters.add(songQuery.album.equalsIgnoreCase(songRequest.getAlbum()));
+
+        String album = songRequest.getAlbum();
+        if(isNotNull(album)){
+            filters.add(songQuery.album.likeIgnoreCase(album));
         }
-        if(songRequest.getLanguage() != null){
-            filters.add(songQuery.language.equalsIgnoreCase(songRequest.getLanguage()));
+
+        String language = songRequest.getLanguage();
+        if(isNotNull(language)){
+            filters.add(songQuery.language.likeIgnoreCase(language));
         }
-        if(songRequest.getInfo() != null){
-            filters.add(songQuery.information.in(songRequest.getInfo()));
+
+        String info = songRequest.getInfo();
+        if(isNotNull(info)){
+            filters.add(songQuery.information.likeIgnoreCase(info));
         }
         return filters;
+    }
+
+    private boolean isNotNull(String str){
+        if(str != null && !"".equals(str))
+            return true;
+        return false;
+    }
+
+    private SongPageDto pageToDto(Page<Song> page){
+
+        List<Song> content = page.getContent();
+        List<SongDto> dtos = new ArrayList<>();
+        for (Song song: content) {
+            SongDto dto = new SongDto();
+            dto.setId(song.getId());
+            dto.setPhotoLink(song.getPhotoLink());
+            dto.setTitle(song.getTitle());
+            dto.setGenre(song.getGenre());
+            dto.setArtist(song.getArtist());
+            dto.setAlbum(song.getAlbum());
+            dto.setLanguage(song.getLanguage());
+
+            if(null != song.getLyrics()){
+                dto.setLyrics(song.getLyrics().getText());
+            }
+            dto.setDownloads(song.getDownloads().size());
+            dtos.add(dto);
+        }
+
+        SongPageDto dto = new SongPageDto();
+        dto.setContent(dtos);
+        dto.setTotalPages(page.getTotalPages());
+        dto.setTotalElements(page.getTotalElements());
+        dto.setLast(page.isLast());
+        dto.setSize(page.getSize());
+        dto.setNumber(page.getNumber());
+        dto.setFirst(page.isFirst());
+        dto.setNumberOfElements(page.getNumberOfElements());
+        dto.setEmpty(page.isEmpty());
+
+        return dto;
     }
 
 }

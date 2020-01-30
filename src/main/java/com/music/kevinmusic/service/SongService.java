@@ -1,6 +1,7 @@
 package com.music.kevinmusic.service;
 
 import com.music.kevinmusic.command.SongCommand;
+import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.Song;
 import com.music.kevinmusic.request.SongRequest;
@@ -13,9 +14,9 @@ public interface SongService {
 
     Song getSongById(Long id, Information information);
 
-    Page<Song> getFilterOneQuery(SongSingleRequest songSingleRequest);
+    SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest);
 
-    Page<Song> getFilter(SongRequest songRequest);
+    SongPageDto getFilter(SongRequest songRequest);
 
     Song saveOrUpdate(SongCommand songCommand, Information information);
 
@@ -33,5 +34,5 @@ public interface SongService {
 
     List<Song> getTop15Album(Information information);
 
-    Page<Song> getPopularSong(SongSingleRequest songSingleRequest);
+    SongPageDto getPopularSong(SongSingleRequest songSingleRequest);
 }
