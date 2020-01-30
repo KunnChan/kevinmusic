@@ -61,6 +61,8 @@ public class SongServiceImpl implements SongService {
         history.setInformation(songSingleRequest.getInformation());
         historyRepo.save(history);
 
+        if(filter == null) return songRepository.findAll(pageable);
+
         return songRepository.findAll(filter, pageable);
     }
 
@@ -209,8 +211,8 @@ public class SongServiceImpl implements SongService {
         return songRepository.save(song);
     }
 
-    private BooleanExpression getQuery(String q) {
-        String query = q == null ? "" : q;
+    private BooleanExpression getQuery(String query) {
+        if(query == null) return null;
 
        QSong songQuery = QSong.songEntity;
        BooleanExpression filter = songQuery.album.equalsIgnoreCase(query)

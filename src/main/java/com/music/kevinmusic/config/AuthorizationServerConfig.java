@@ -36,6 +36,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Value("${com.kc.rock.access.sign.key}")
     private String signingKey;
 
+    @Value("${com.kc.rock.access.token.validity.second:4000}")
+    private Integer accessTokenTimeInSecond;
+
+    @Value("${com.kc.rock.refresh.token.validity.second:6000}")
+    private Integer refreshTokenTimeInSecond;
+
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -75,8 +81,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
                 .scopes("read", "write", "trust")
                 .resourceIds("oauth2-resource")
-                .accessTokenValiditySeconds(5000)
-                .refreshTokenValiditySeconds(864000)
+                .accessTokenValiditySeconds(accessTokenTimeInSecond)
+                .refreshTokenValiditySeconds(refreshTokenTimeInSecond)
                 .secret(passwordEncoder.encode(clientSecret));
     }
 }
