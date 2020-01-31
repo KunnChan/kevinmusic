@@ -1,5 +1,6 @@
 package com.music.kevinmusic.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,12 +23,16 @@ public class Song extends StatusEntity {
 
     @Lob
     private String information;
-    private String album;
+    private String albumName;
 
     private String language;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Lyrics lyrics;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Album album;
 
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DownloadLink> downloadLinks = new HashSet<>();
