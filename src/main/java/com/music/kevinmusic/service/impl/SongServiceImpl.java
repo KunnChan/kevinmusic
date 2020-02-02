@@ -56,7 +56,14 @@ public class SongServiceImpl implements SongService {
     @Transactional
     public SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest) {
 
-        PageRequest pageable = CustomCommon.getPageable(songSingleRequest.getPage());
+        PageRequest pageable;
+        if(songSingleRequest.getIsPopular()){
+            pageable = CustomCommon.getPageable(songSingleRequest.getPage(), "downloadCount");
+
+        }else{
+            pageable = CustomCommon.getPageable(songSingleRequest.getPage());
+
+        }
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
 
         TransactionHistory history = new TransactionHistory(gson.toJson(songSingleRequest), EventAction.SEARCH_SONG_BY_SINGLE_QUERY);
@@ -174,28 +181,27 @@ public class SongServiceImpl implements SongService {
     @Transactional
     @Override
     public Song addDownload(SongCommand songCommand, Information information) {
-        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.LYRIC_UPDATE);
+        TransactionHistory history = new TransactionHistory(gson.toJson(songCommand), EventAction.DOWNLOAD);
         history.setInformation(information);
 
         Song song = songRepository.findById(songCommand.getId())
                 .orElseThrow(() -> new NotFoundException("Song id not found : " + songCommand.getId()));
 
         song.addDownload(new Download(songCommand.getUserInfo()));
+        song.setDownloadCount(song.getDownloads().size());
 
         historyRepo.save(history);
         return songRepository.save(song);
     }
 
+    @Transactional
     @Override
-    public List<Song> getTop15Album(Information information) {
+    public List<SongDto> getSongByAlbumId(Long albumId, Information information) {
+        TransactionHistory history = new TransactionHistory("Album Id : " + albumId, EventAction.GET_SONG_BY_ALBUMID);
+        history.setInformation(information);
+        historyRepo.save(history);
 
-        return null;
-    }
-
-    @Override
-    public SongPageDto getPopularSong(SongSingleRequest songSingleRequest) {
-
-        return null;
+        return toDto(songRepository.findAllByAlbumId(albumId));
     }
 
     @Transactional
@@ -218,10 +224,8 @@ public class SongServiceImpl implements SongService {
         if(query == null) return null;
 
        QSong songQuery = QSong.songEntity;
-       BooleanExpression filter = songQuery.album.likeIgnoreCase(query)
-                .or(songQuery.artist.likeIgnoreCase(query))
+       BooleanExpression filter = songQuery.artist.likeIgnoreCase(query)
                 .or(songQuery.genre.likeIgnoreCase(query))
-                .or(songQuery.information.likeIgnoreCase(query))
                 .or(songQuery.language.likeIgnoreCase(query))
                 .or(songQuery.title.likeIgnoreCase(query));
 
@@ -237,66 +241,36 @@ public class SongServiceImpl implements SongService {
         }
 
         String title = songRequest.getTitle();
-        if(isNotNull(title)){
+        if(CustomCommon.isNotNull(title)){
             filters.add(songQuery.title.likeIgnoreCase(title));
         }
 
         String genre = songRequest.getGenre();
-        if(isNotNull(genre)){
+        if(CustomCommon.isNotNull(genre)){
             filters.add(songQuery.genre.likeIgnoreCase(genre));
         }
 
         String artist = songRequest.getArtist();
-        if(isNotNull(artist)){
+        if(CustomCommon.isNotNull(artist)){
             filters.add(songQuery.artist.likeIgnoreCase(artist));
         }
 
-        String album = songRequest.getAlbum();
-        if(isNotNull(album)){
-            filters.add(songQuery.album.likeIgnoreCase(album));
-        }
-
         String language = songRequest.getLanguage();
-        if(isNotNull(language)){
+        if(CustomCommon.isNotNull(language)){
             filters.add(songQuery.language.likeIgnoreCase(language));
         }
 
         String info = songRequest.getInfo();
-        if(isNotNull(info)){
+        if(CustomCommon.isNotNull(info)){
             filters.add(songQuery.information.likeIgnoreCase(info));
         }
         return filters;
     }
 
-    private boolean isNotNull(String str){
-        if(str != null && !"".equals(str))
-            return true;
-        return false;
-    }
-
     private SongPageDto pageToDto(Page<Song> page){
 
-        List<Song> content = page.getContent();
-        List<SongDto> dtos = new ArrayList<>();
-        for (Song song: content) {
-            SongDto dto = new SongDto();
-            dto.setId(song.getId());
-            dto.setPhotoLink(song.getPhotoLink());
-            dto.setTitle(song.getTitle());
-            dto.setGenre(song.getGenre());
-            dto.setArtist(song.getArtist());
-            dto.setAlbum(song.getAlbum());
-            dto.setLanguage(song.getLanguage());
-
-            if(null != song.getLyrics()){
-                dto.setLyrics(song.getLyrics().getText());
-            }
-            dto.setDownloads(song.getDownloads().size());
-            dtos.add(dto);
-        }
-
         SongPageDto dto = new SongPageDto();
-        dto.setContent(dtos);
+        dto.setContent(toDto(page.getContent()));
         dto.setTotalPages(page.getTotalPages());
         dto.setTotalElements(page.getTotalElements());
         dto.setLast(page.isLast());
@@ -307,6 +281,30 @@ public class SongServiceImpl implements SongService {
         dto.setEmpty(page.isEmpty());
 
         return dto;
+    }
+
+    private List<SongDto> toDto(List<Song> songs){
+        List<SongDto> dtos = new ArrayList<>();
+        for (Song song: songs) {
+            SongDto dto = new SongDto();
+            dto.setId(song.getId());
+            dto.setPhotoLink(song.getPhotoLink());
+            dto.setTitle(song.getTitle());
+            dto.setGenre(song.getGenre());
+            dto.setArtist(song.getArtist());
+            dto.setLanguage(song.getLanguage());
+
+            if(null != song.getAlbum()){
+                dto.setAlbum(song.getAlbum().getTitle());
+            }
+
+            if(null != song.getLyrics()){
+                dto.setLyrics(song.getLyrics().getText());
+            }
+            dto.setDownloads(song.getDownloadCount());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
 }

@@ -9,6 +9,8 @@ import lombok.ToString;
 public class SongSingleRequest {
 
     private String query;
+    private Long albumId;
+    private Boolean isPopular = Boolean.FALSE;
     private PageInfo page;
 
     private Information information;

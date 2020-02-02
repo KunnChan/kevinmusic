@@ -1,6 +1,7 @@
 package com.music.kevinmusic.controller;
 
 import com.music.kevinmusic.command.SongCommand;
+import com.music.kevinmusic.command.SongDto;
 import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
@@ -10,7 +11,6 @@ import com.music.kevinmusic.request.SongSingleRequest;
 import com.music.kevinmusic.service.SongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,23 +35,14 @@ public class SongController {
         return songService.getSongById(id, information);
     }
 
-    @GetMapping("/song/top/album")
-    public List<Song> getTopAlbum(@RequestHeader MultiValueMap<String, String> headers){
+    @GetMapping("/song/album/{albumId}")
+    public List<SongDto> getByAlbum(@PathVariable Long albumId,
+                                    @RequestHeader MultiValueMap<String, String> headers){
 
-        log.info("song get top album");
+        log.info("get song by albumId : {}, ", albumId);
         Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.getTop15Album(information);
+        return songService.getSongByAlbumId(albumId, information);
     }
-
-    @PostMapping("/song/popular")
-    public SongPageDto getPopular(@RequestBody SongSingleRequest songSingleRequest,
-                          @RequestHeader MultiValueMap<String, String> headers){
-
-        log.info("get popular song : {}, ", songSingleRequest);
-        songSingleRequest.setInformation(CustomCommon.getBrowserInformation(headers));
-        return songService.getPopularSong(songSingleRequest);
-    }
-
 
     @PostMapping("/song/q")
     public SongPageDto get(@RequestBody SongSingleRequest songSingleRequest,
@@ -104,7 +95,7 @@ public class SongController {
         return songService.addReaction(songCommand, information);
     }
 
-    @PostMapping("/shield/song/download")
+    @PostMapping("/song/download")
     public Song addDownload(@RequestBody SongCommand songCommand,
                             @RequestHeader MultiValueMap<String, String> headers){
 

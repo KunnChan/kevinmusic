@@ -35,4 +35,10 @@ public class CustomCommon {
         String deviceType = headers.getFirst("deviceType"); // this field represent MOBILE or WEB
         return new Information(userAgent, acceptLanguage, host, latLon, deviceName, deviceId, deviceType);
     }
+
+    public static boolean isNotNull(String str){
+        if(str != null && !"".equals(str))
+            return true;
+        return false;
+    }
 }

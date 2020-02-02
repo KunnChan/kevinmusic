@@ -1,12 +1,12 @@
 package com.music.kevinmusic.service;
 
 import com.music.kevinmusic.command.SongCommand;
+import com.music.kevinmusic.command.SongDto;
 import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.Song;
 import com.music.kevinmusic.request.SongRequest;
 import com.music.kevinmusic.request.SongSingleRequest;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -32,7 +32,5 @@ public interface SongService {
 
     Song addDownload(SongCommand songCommand, Information information);
 
-    List<Song> getTop15Album(Information information);
-
-    SongPageDto getPopularSong(SongSingleRequest songSingleRequest);
+    List<SongDto> getSongByAlbumId(Long albumId, Information information);
 }

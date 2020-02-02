@@ -23,9 +23,9 @@ public class Song extends StatusEntity {
 
     @Lob
     private String information;
-    private String albumName;
-
     private String language;
+
+    private int downloadCount;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Lyrics lyrics;
