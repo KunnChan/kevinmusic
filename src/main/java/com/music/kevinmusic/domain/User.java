@@ -47,5 +47,4 @@ public class User extends StatusEntity {
 
     private Double point = 0d;
 
-
 }

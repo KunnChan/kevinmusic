@@ -2,6 +2,7 @@ package com.music.kevinmusic.service.impl;
 
 import com.music.kevinmusic.domain.User;
 import com.music.kevinmusic.enums.ActivationStatus;
+import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,17 +25,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<User> user = userRepo.findByUsername(username);
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException(username+ " Not found !!");
+            throw new NotFoundException(username+ " Not found !!");
         }
         User found = user.get();
         if(found.getActivationStatus().equals(ActivationStatus.ACTIVE)) {
             return new UserDetailsImpl(found);
         }else if(found.getActivationStatus().equals(ActivationStatus.PENDING)) {
-            throw new UsernameNotFoundException( username + " Not found or User Status is Pending");
+            throw new NotFoundException( username + " User Status is Pending");
         }else if(found.getActivationStatus().equals(ActivationStatus.BLOCKED)) {
-            throw new UsernameNotFoundException( username + " Not found or User Status is Block");
+            throw new NotFoundException( username + " User Status is Block");
         }else{
-            throw new UsernameNotFoundException( username + " Not found or User Status is Unactive");
+            throw new NotFoundException( username + " User Status is Unactive");
         }
 
     }

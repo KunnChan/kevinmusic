@@ -49,7 +49,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
         resources
                 .tokenServices(tokenServices())
-           //     .resourceId(resourceId)
+                .resourceId(resourceId)
                 .stateless(false);
     }
 
@@ -61,8 +61,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/api").permitAll()
-                .antMatchers("/zone/**").access("hasRole('ADMIN')")
+                .antMatchers("/").permitAll()
+                .antMatchers("/zone/**").access("hasAuthority('ADMIN')")
                 .antMatchers("/shield/**").authenticated()
                 .and()
                 .exceptionHandling()

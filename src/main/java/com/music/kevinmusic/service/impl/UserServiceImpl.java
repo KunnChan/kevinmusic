@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
         gson = new Gson();
     }
 
+    @Transactional
     @Override
     public void saveAll(List<User> users) {
 

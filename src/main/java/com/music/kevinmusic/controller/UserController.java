@@ -32,7 +32,7 @@ public class UserController {
         return userService.getUserById(id, information);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     public User getByUsername(@PathVariable String username, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("get by username " + username);
