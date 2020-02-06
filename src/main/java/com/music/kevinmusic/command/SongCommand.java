@@ -28,6 +28,8 @@ public class SongCommand {
 
     private String lyrics;
     private String userInfo;
+    private String downloadLinkName;
+    private String downloadLinkUrl;
 
     private String browserInfo;
 
@@ -35,6 +37,6 @@ public class SongCommand {
     private UserReaction userReaction = UserReaction.LIKE;
 
     private DownloadLink downloadLink;
-
     private Set<DownloadLink> downloadLinks = new HashSet<>();
+
 }

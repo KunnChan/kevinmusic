@@ -27,7 +27,7 @@ public class Song extends StatusEntity {
 
     private int downloadCount;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Lyrics lyrics;
 
     @JsonIgnore
@@ -55,6 +55,7 @@ public class Song extends StatusEntity {
         downloadLink.setSong(this);
         this.downloadLinks.add(downloadLink);
     }
+
     public void addDownloadLinks(Set<DownloadLink> downloadLinks){
         for (DownloadLink downloadLink: downloadLinks) {
             addDownloadLink(downloadLink);

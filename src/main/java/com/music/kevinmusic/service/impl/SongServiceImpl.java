@@ -6,6 +6,7 @@ import com.music.kevinmusic.command.SongDto;
 import com.music.kevinmusic.command.SongPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.*;
+import com.music.kevinmusic.enums.ActivationStatus;
 import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QSong;
@@ -22,9 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -100,7 +99,8 @@ public class SongServiceImpl implements SongService {
     @Override
     @Transactional
     public Song saveOrUpdate(SongCommand songCommand, Information information) {
-        Song song = modelMapper.map(songCommand, Song.class);
+
+        Song song = toSong(songCommand);
         TransactionHistory history = new TransactionHistory(gson.toJson(songCommand));
         history.setInformation(information);
         if(song.getId() == null){
@@ -305,15 +305,43 @@ public class SongServiceImpl implements SongService {
 
             if(null != song.getDownloadLinks() && song.getDownloadLinks().size() > 0){
                 Set<DownloadLink> downloadLinks = song.getDownloadLinks();
-                DownloadLink downloadLink = downloadLinks.iterator().next();
+                DownloadLink downloadLink = downloadLinks.stream()
+                        .reduce((first, second) -> second)
+                        .orElse(null);
                 dto.setDownloadLinkUrl(downloadLink.getLinkUrl());
                 dto.setDownloadLinkName(downloadLink.getName());
 
             }
+            dto.setInformation(song.getInformation());
             dto.setDownloads(song.getDownloadCount());
             dtos.add(dto);
         }
         return dtos;
     }
 
+    private Song toSong(SongCommand songCommand){
+        Song song = new Song();
+        song.setId(songCommand.getId());
+        if(!CustomCommon.isNotNull(songCommand.getTitle())){
+            throw new NotFoundException("Title should be null");
+        }
+        song.setTitle(songCommand.getTitle());
+        song.setArtist(songCommand.getArtist());
+        song.setLanguage(songCommand.getLanguage());
+        song.setGenre(songCommand.getGenre());
+        song.setPhotoLink(songCommand.getPhotoLink());
+        song.setInformation(songCommand.getInformation());
+        song.setActivationStatus(ActivationStatus.ACTIVE);
+        if(CustomCommon.isNotNull(songCommand.getLyrics())){
+            song.setLyrics(new Lyrics(songCommand.getLyrics()));
+        }
+
+        if(CustomCommon.isNotNull(songCommand.getDownloadLinkUrl())){
+            DownloadLink downloadLink = new DownloadLink(songCommand.getDownloadLinkUrl(), songCommand.getDownloadLinkName());
+            downloadLink.setSong(song);
+            song.setDownloadLinks(new HashSet<>(Arrays.asList(downloadLink)));
+        }
+
+        return song;
+    }
 }
