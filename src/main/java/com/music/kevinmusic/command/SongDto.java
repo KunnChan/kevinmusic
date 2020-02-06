@@ -10,6 +10,8 @@ public class SongDto {
 
     private Long id;
     private String photoLink;
+    private String downloadLinkUrl;
+    private String downloadLinkName;
     private String  title;
     private String genre;
     private String artist;

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -300,6 +301,14 @@ public class SongServiceImpl implements SongService {
 
             if(null != song.getLyrics()){
                 dto.setLyrics(song.getLyrics().getText());
+            }
+
+            if(null != song.getDownloadLinks() && song.getDownloadLinks().size() > 0){
+                Set<DownloadLink> downloadLinks = song.getDownloadLinks();
+                DownloadLink downloadLink = downloadLinks.iterator().next();
+                dto.setDownloadLinkUrl(downloadLink.getLinkUrl());
+                dto.setDownloadLinkName(downloadLink.getName());
+
             }
             dto.setDownloads(song.getDownloadCount());
             dtos.add(dto);
