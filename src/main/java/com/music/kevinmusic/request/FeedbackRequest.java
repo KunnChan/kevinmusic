@@ -14,6 +14,7 @@ public class FeedbackRequest {
     private Date toDt;
     private String emailOrphone;
     private String text;
+    private String name;
 
     private PageInfo page;
 }

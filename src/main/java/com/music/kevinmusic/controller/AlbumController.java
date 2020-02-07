@@ -5,6 +5,7 @@ import com.music.kevinmusic.command.AlbumPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Album;
 import com.music.kevinmusic.domain.Information;
+import com.music.kevinmusic.request.AlbumRequest;
 import com.music.kevinmusic.request.AlbumSingleRequest;
 import com.music.kevinmusic.service.AlbumService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +38,19 @@ public class AlbumController {
         return albumService.getFilterOneQuery(albumSingleRequest);
     }
 
+    @PostMapping("/album/query")
+    public AlbumPageDto getAlbums(@RequestBody AlbumRequest albumRequest){
+
+        log.info("get getAlbums {} ", albumRequest);
+        return albumService.getFilter(albumRequest);
+    }
+
     @PostMapping("/shield/album/save")
     public Album saveOrUpdate(@RequestBody AlbumCommand albumCommand,
                              @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("album saveOrUpdate => {}", albumCommand);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return albumService.saveOrUpdate(albumCommand, information);
+        return albumService.saveOrUpdate(albumCommand);
     }
 
 }

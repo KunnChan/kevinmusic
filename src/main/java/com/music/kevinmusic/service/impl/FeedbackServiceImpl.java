@@ -88,22 +88,26 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         QFeedback qFeedback = QFeedback.feedbackEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-        if(request.getId() != null){
-            filters.add(qFeedback.id.eq(request.getId()));
+        Long id = request.getId();
+        if(id != null && !"".equals(id)){
+            filters.add(qFeedback.id.eq(id));
         }
         if (request.getFromDt() != null) {
-            filters.add(qFeedback.createdAt.goe(request.getFromDt()));
+            filters.add(qFeedback.createdDate.goe(request.getFromDt()));
         }
         if (request.getToDt() != null) {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(request.getToDt().toInstant(), ZoneOffset.UTC);
             Date midnightDayAfterEndDate = Date.from(localDateTime.plusDays(1L).toInstant(ZoneOffset.UTC));
-            filters.add(qFeedback.createdAt.before(midnightDayAfterEndDate));
+            filters.add(qFeedback.createdDate.before(midnightDayAfterEndDate));
         }
-        if(request.getText() != null){
-            filters.add(qFeedback.text.equalsIgnoreCase(request.getText().toString()));
+        if(CustomCommon.isNotNull(request.getText())){
+            filters.add(qFeedback.text.equalsIgnoreCase(request.getText()));
         }
-        if(request.getEmailOrphone() != null){
+        if(CustomCommon.isNotNull(request.getEmailOrphone())){
             filters.add(qFeedback.emailOrphone.likeIgnoreCase(request.getEmailOrphone()));
+        }
+        if(CustomCommon.isNotNull(request.getName())){
+            filters.add(qFeedback.name.likeIgnoreCase(request.getName()));
         }
 
         return filters;

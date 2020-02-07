@@ -16,9 +16,10 @@ public class QFeedback extends EntityPathBase<Feedback> {
   public final NumberPath<Long> id;
   public final StringPath emailOrphone;
   public final StringPath text;
-  public final DateTimePath<Date> createdAt;
+  public final StringPath name;
+  public final DateTimePath<Date> createdDate;
   public final StringPath createdBy;
-  public final DateTimePath<Date> updatedAt;
+  public final DateTimePath<Date> updatedDate;
   public final StringPath updatedBy;
 
 
@@ -28,10 +29,11 @@ public class QFeedback extends EntityPathBase<Feedback> {
     this.id = this.createNumber("id", Long.class);
     this.emailOrphone = this.createString("emailOrphone");
     this.text = this.createString("text");
+    this.name = this.createString("name");
     this.createdBy = this.createString("createdBy");
     this.updatedBy = this.createString("updatedBy");
-    this.createdAt = this.createDateTime("createdAt", Date.class);
-    this.updatedAt = this.createDateTime("updatedAt", Date.class);
+    this.createdDate = this.createDateTime("createdDate", Date.class);
+    this.updatedDate = this.createDateTime("updatedDate", Date.class);
 
   }
 
@@ -41,9 +43,10 @@ public class QFeedback extends EntityPathBase<Feedback> {
     this.id = this.createNumber("id", Long.class);
     this.emailOrphone = this.createString("emailOrphone");
     this.text = this.createString("text");
+    this.name = this.createString("name");
     this.createdBy = this.createString("createdBy");
     this.updatedBy = this.createString("updatedBy");
-    this.createdAt = this.createDateTime("createdAt", Date.class);
-    this.updatedAt = this.createDateTime("updatedAt", Date.class);
+    this.createdDate = this.createDateTime("createdDate", Date.class);
+    this.updatedDate = this.createDateTime("updatedDate", Date.class);
   }
 }

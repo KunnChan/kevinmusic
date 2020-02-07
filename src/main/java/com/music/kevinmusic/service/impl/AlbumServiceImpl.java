@@ -7,32 +7,39 @@ import com.music.kevinmusic.command.AlbumPageDto;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Album;
 import com.music.kevinmusic.domain.Information;
+import com.music.kevinmusic.domain.Song;
 import com.music.kevinmusic.domain.TransactionHistory;
 import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QAlbum;
 import com.music.kevinmusic.repository.AlbumRepository;
+import com.music.kevinmusic.repository.SongRepository;
 import com.music.kevinmusic.repository.TransactionHistoryRepository;
+import com.music.kevinmusic.request.AlbumRequest;
 import com.music.kevinmusic.request.AlbumSingleRequest;
 import com.music.kevinmusic.service.AlbumService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
 
     private final AlbumRepository albumRepository;
     private final TransactionHistoryRepository historyRepo;
+    private final SongRepository songRepository;
     private Gson gson;
 
-    public AlbumServiceImpl(AlbumRepository albumRepository, TransactionHistoryRepository historyRepo) {
+    public AlbumServiceImpl(AlbumRepository albumRepository, TransactionHistoryRepository historyRepo, SongRepository songRepository) {
         this.albumRepository = albumRepository;
         this.historyRepo = historyRepo;
+        this.songRepository = songRepository;
         this.gson = new Gson();
     }
 
@@ -72,9 +79,70 @@ public class AlbumServiceImpl implements AlbumService {
         return filter;
     }
 
+    @Transactional
     @Override
-    public Album saveOrUpdate(AlbumCommand albumCommand, Information information) {
-        return null;
+    public Album saveOrUpdate(AlbumCommand albumCommand) {
+        Album album = new Album();
+        album.setId(albumCommand.getId());
+        album.setTitle(albumCommand.getTitle());
+        album.setArtist(albumCommand.getArtist());
+        album.setGenre(albumCommand.getGenre());
+        album.setPhotoLink(albumCommand.getPhotoLink());
+
+        Long songId = albumCommand.getSongId();
+        if(null != songId && !"".equals(songId)){
+            Optional<Song> songOptional = songRepository.findById(songId);
+            if(songOptional.isPresent()){
+                album.addSong(songOptional.get());
+            }
+        }
+
+        return albumRepository.save(album);
+    }
+
+    @Transactional
+    @Override
+    public AlbumPageDto getFilter(AlbumRequest albumRequest) {
+
+        PageRequest pageable = CustomCommon.getPageable(albumRequest.getPage());
+        List<BooleanExpression> filters = getQuery(albumRequest);
+
+        if(filters.isEmpty()){
+            return pageToDto(albumRepository.findAll(pageable));
+        }
+
+        BooleanExpression filterExpression = filters.get(0);
+        for (int i = 1; i <= filters.size() - 1; ++i) {
+            filterExpression = filterExpression.and(filters.get(i));
+        }
+        return pageToDto(albumRepository.findAll(filterExpression, pageable));
+    }
+
+    private List<BooleanExpression> getQuery(AlbumRequest albumRequest) {
+        QAlbum albumEntity = QAlbum.albumEntity;
+        List<BooleanExpression> filters = new ArrayList<>();
+
+        Long id = albumRequest.getId();
+        if(id != null && !"".equals(id)){
+            filters.add(albumEntity.id.eq(id));
+        }
+
+        String title = albumRequest.getTitle();
+        if(CustomCommon.isNotNull(title)){
+            filters.add(albumEntity.title.likeIgnoreCase(title));
+        }
+
+        String genre = albumRequest.getGenre();
+        if(CustomCommon.isNotNull(genre)){
+            filters.add(albumEntity.genre.likeIgnoreCase(genre));
+        }
+
+        String artist = albumRequest.getArtist();
+        if(CustomCommon.isNotNull(artist)){
+            filters.add(albumEntity.artist.likeIgnoreCase(artist));
+        }
+
+        return filters;
     }
 
     private AlbumPageDto pageToDto(Page<Album> page){
@@ -88,7 +156,9 @@ public class AlbumServiceImpl implements AlbumService {
             dto.setTitle(album.getTitle());
             dto.setGenre(album.getGenre());
             dto.setArtist(album.getArtist());
-
+            if(null != album.getSongs()){
+                dto.setSongCount(album.getSongs().size());
+            }
             dtos.add(dto);
         }
 

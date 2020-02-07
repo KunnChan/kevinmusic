@@ -1,6 +1,5 @@
 package com.music.kevinmusic.request;
 
-import com.music.kevinmusic.enums.EventAction;
 import lombok.Data;
 import lombok.ToString;
 
@@ -13,7 +12,7 @@ public class TransactionHistoryRequest {
     private Long id;
     private Date fromDt;
     private Date toDt;
-    private EventAction eventAction;
+    private String eventAction;
     private String payload;
     private String information;
 

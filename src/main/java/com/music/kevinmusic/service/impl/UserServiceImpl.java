@@ -186,25 +186,26 @@ public class UserServiceImpl implements UserService {
 
         QUser qUser = QUser.userEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-        if(userRequest.getId()!= null){
-            filters.add(qUser.id.eq(userRequest.getId()));
+        Long id = userRequest.getId();
+        if(id != null && !"".equals(id)){
+            filters.add(qUser.id.eq(id));
         }
-        if(userRequest.getName()!= null){
+        if(CustomCommon.isNotNull( userRequest.getName())){
             filters.add(qUser.name.equalsIgnoreCase(userRequest.getName()));
         }
-        if(userRequest.getUsername() != null){
+        if(CustomCommon.isNotNull(userRequest.getUsername())){
             filters.add(qUser.username.equalsIgnoreCase(userRequest.getUsername()));
         }
-        if(userRequest.getPhone() != null){
+        if(CustomCommon.isNotNull(userRequest.getPhone())){
             filters.add(qUser.phone.equalsIgnoreCase(userRequest.getPhone()));
         }
-        if(userRequest.getEmail() != null){
+        if(CustomCommon.isNotNull(userRequest.getEmail())){
             filters.add(qUser.email.equalsIgnoreCase(userRequest.getEmail()));
         }
-        if(userRequest.getActivationStatus() != null){
-            filters.add(qUser.userStatus.equalsIgnoreCase(userRequest.getActivationStatus().toString()));
-        }
-        if(userRequest.getNote() != null){
+//        if(CustomCommon.isNotNull(userRequest.getActivationStatus())){
+//            filters.add(qUser.userStatus.equalsIgnoreCase(userRequest.getActivationStatus().toString()));
+//        }
+        if(CustomCommon.isNotNull(userRequest.getNote() )){
             filters.add(qUser.note.likeIgnoreCase(userRequest.getNote()));
         }
 

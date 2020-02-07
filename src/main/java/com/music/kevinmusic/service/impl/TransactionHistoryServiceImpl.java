@@ -55,8 +55,9 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 
         QTransactionHistory historyQuery = QTransactionHistory.historyEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-        if(request.getId() != null){
-            filters.add(historyQuery.id.eq(request.getId()));
+        Long id = request.getId();
+        if(id != null && !"".equals(id)){
+            filters.add(historyQuery.id.eq(id));
         }
         if (request.getFromDt() != null) {
             filters.add(historyQuery.transactionDate.goe(request.getFromDt()));
@@ -66,13 +67,13 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
             Date midnightDayAfterEndDate = Date.from(localDateTime.plusDays(1L).toInstant(ZoneOffset.UTC));
             filters.add(historyQuery.transactionDate.before(midnightDayAfterEndDate));
         }
-        if(request.getEventAction() != null){
-            filters.add(historyQuery.eventAction.equalsIgnoreCase(request.getEventAction().toString()));
+        if(CustomCommon.isNotNull(request.getEventAction())){
+            filters.add(historyQuery.eventAction.equalsIgnoreCase(request.getEventAction()));
         }
-        if(request.getPayload() != null){
+        if(CustomCommon.isNotNull(request.getPayload())){
             filters.add(historyQuery.payload.likeIgnoreCase(request.getPayload()));
         }
-        if(request.getInformation() != null){
+        if(CustomCommon.isNotNull(request.getInformation())){
             filters.add(historyQuery.information.likeIgnoreCase(request.getInformation()));
         }
         return filters;

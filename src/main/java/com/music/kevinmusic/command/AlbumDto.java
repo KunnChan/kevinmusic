@@ -12,4 +12,5 @@ public class AlbumDto {
     private String  title;
     private String genre;
     private String artist;
+    private Integer songCount;
 }
