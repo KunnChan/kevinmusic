@@ -23,8 +23,7 @@ public class PointController {
     public User get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user id " + id);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return userService.getUserById(id, information);
+        return userService.getUserById(id);
     }
 
     @PostMapping("/shield/point/add")

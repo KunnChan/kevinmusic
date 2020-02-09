@@ -20,6 +20,7 @@ public class UserCommand {
     private String password;
     private String phone;
     private String email;
+    private Double point;
 
     private ActivationStatus activationStatus;
     private Set<Role> roles = new HashSet<>();

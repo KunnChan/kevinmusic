@@ -2,9 +2,7 @@ package com.music.kevinmusic.controller;
 
 import com.music.kevinmusic.command.AlbumCommand;
 import com.music.kevinmusic.command.AlbumPageDto;
-import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Album;
-import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.request.AlbumRequest;
 import com.music.kevinmusic.request.AlbumSingleRequest;
 import com.music.kevinmusic.service.AlbumService;
@@ -27,8 +25,7 @@ public class AlbumController {
     public Album get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("album id " + id);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return albumService.getById(id, information);
+        return albumService.getById(id);
     }
 
     @PostMapping("/album/q")

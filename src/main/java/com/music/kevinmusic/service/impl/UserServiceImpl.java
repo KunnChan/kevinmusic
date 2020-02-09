@@ -24,10 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -61,21 +58,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User getUserById(Long id, Information information) {
-    //    TransactionHistory history = new TransactionHistory("User Id : " + id, EventAction.SEARCH_USER_BY_ID);
-     //   history.setInformation(information);
-     //   historyRepo.save(history);
-
+    public User getUserById(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("User is not found for id "+ id));
     }
 
     @Override
     @Transactional
-    public User getUserByUsername(String username, Information information) {
-        TransactionHistory history = new TransactionHistory("Username : " + username, EventAction.SEARCH_USER_BY_USERNAME);
-        history.setInformation(information);
-        historyRepo.save(history);
+    public User getUserByUsername(String username ) {
 
         return userRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Username is not found for "+ username));
@@ -88,12 +78,8 @@ public class UserServiceImpl implements UserService {
         PageRequest pageable = CustomCommon.getPageable(userRequest.getPage());
         List<BooleanExpression> filters = getQuery(userRequest);
 
-        TransactionHistory history = new TransactionHistory(gson.toJson(userRequest), EventAction.SEARCH_USER_ADVANCE);
-        history.setInformation(userRequest.getInformation());
-        historyRepo.save(history);
-
         if(filters.isEmpty()){
-            return userRepo.findAll(pageable);
+           return userRepo.findAll(pageable);
         }
         BooleanExpression filterExpression = filters.get(0);
         for (int i = 1; i <= filters.size() - 1; ++i) {
@@ -111,8 +97,8 @@ public class UserServiceImpl implements UserService {
         history.setInformation(information);
         if(user.getId() == null){
             // insert
-         //   user.setCreatedAt(new Date());
-         //   user.setCreatedBy("u1");
+            user.setCreatedDate(new Date());
+            user.setCreatedBy("default");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             if(userCommand.getRoles().isEmpty()){
@@ -133,13 +119,15 @@ public class UserServiceImpl implements UserService {
                 user.setRoles(userCommand.getRoles());
             }
             user.setPassword(userForUpdate.getPassword());
-        //    user.setCreatedAt(userForUpdate.getCreatedAt());
-        //    user.setCreatedBy(userForUpdate.getCreatedBy());
+            user.setCreatedDate(userForUpdate.getCreatedDate());
+            user.setCreatedBy(userForUpdate.getCreatedBy());
 
             history.setEventAction(EventAction.UPDATE_USER);
+            user.setPoint(userForUpdate.getPoint() + userCommand.getPoint());
+
         }
-    //    user.setUpdatedAt(new Date());
-     //   user.setUpdatedBy("u1");
+        user.setLastModifiedDate(new Date());
+        user.setLastModifiedBy("u1");
 
         historyRepo.save(history);
         return userRepo.save(user);

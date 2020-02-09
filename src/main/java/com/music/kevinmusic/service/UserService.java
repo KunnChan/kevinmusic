@@ -13,9 +13,9 @@ public interface UserService {
 
     void saveAll(List<User> list);
 
-    User getUserById(Long id, Information information);
+    User getUserById(Long id);
 
-    User getUserByUsername(String username, Information information);
+    User getUserByUsername(String username);
 
     Page<User> getFilter(UserRequest userRequest);
 

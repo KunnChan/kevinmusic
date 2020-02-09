@@ -1,8 +1,6 @@
 package com.music.kevinmusic.controller;
 
-import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Feedback;
-import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.request.FeedbackRequest;
 import com.music.kevinmusic.service.FeedbackService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +25,7 @@ public class FeedbackController {
                              @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("feedback saveOrUpdate => {}", feedback);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return service.saveOrUpdate(feedback, information);
+        return service.saveOrUpdate(feedback);
     }
 
     @GetMapping("/zone/feedback/{id}")

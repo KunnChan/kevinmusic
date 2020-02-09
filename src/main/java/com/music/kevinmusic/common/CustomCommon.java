@@ -32,7 +32,7 @@ public class CustomCommon {
         String deviceName = headers.getFirst("deviceName"); // this will be samsung or ios or something
         String deviceId = headers.getFirst("deviceId");  // this will be imei
         String latLon = headers.getFirst("location");
-        String deviceType = headers.getFirst("deviceType"); // this field represent MOBILE or WEB
+        String deviceType = headers.getFirst("device-type"); // this field represent MOBILE or WEB
         return new Information(userAgent, acceptLanguage, host, latLon, deviceName, deviceId, deviceType);
     }
 

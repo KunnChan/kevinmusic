@@ -31,8 +31,7 @@ public class SongController {
     public Song get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song id " + id);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.getSongById(id, information);
+        return songService.getSongById(id);
     }
 
     @GetMapping("/song/album/{albumId}")

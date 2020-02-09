@@ -28,16 +28,14 @@ public class UserController {
     public User get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user id " + id);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return userService.getUserById(id, information);
+        return userService.getUserById(id);
     }
 
     @GetMapping("/username/{username}")
     public User getByUsername(@PathVariable String username, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("get by username " + username);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return userService.getUserByUsername(username, information);
+        return userService.getUserByUsername(username);
     }
 
     @PostMapping("query")
@@ -45,7 +43,6 @@ public class UserController {
                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user advance query => {}", userRequest);
-        userRequest.setInformation(CustomCommon.getBrowserInformation(headers));
         return userService.getFilter(userRequest);
     }
 

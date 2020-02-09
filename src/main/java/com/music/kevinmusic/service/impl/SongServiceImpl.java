@@ -16,7 +16,6 @@ import com.music.kevinmusic.request.SongRequest;
 import com.music.kevinmusic.request.SongSingleRequest;
 import com.music.kevinmusic.service.SongService;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,23 +29,18 @@ public class SongServiceImpl implements SongService {
 
     private final SongRepository songRepository;
     private final TransactionHistoryRepository historyRepo;
-    private ModelMapper modelMapper;
     private Gson gson;
 
     @Autowired
     public SongServiceImpl(SongRepository songRepository, TransactionHistoryRepository historyRepo) {
         this.songRepository = songRepository;
         this.historyRepo = historyRepo;
-        modelMapper = new ModelMapper();
         gson = new Gson();
     }
 
     @Override
     @Transactional
-    public Song getSongById(Long id, Information information) {
-        TransactionHistory history = new TransactionHistory("Song Id : " + id, EventAction.SEARCH_SONG_BY_ID);
-        history.setInformation(information);
-        historyRepo.save(history);
+    public Song getSongById(Long id) {
 
         return songRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Song id not found : " + id));
@@ -66,9 +60,11 @@ public class SongServiceImpl implements SongService {
         }
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
 
-        TransactionHistory history = new TransactionHistory(gson.toJson(songSingleRequest), EventAction.SEARCH_SONG_BY_SINGLE_QUERY);
-        history.setInformation(songSingleRequest.getInformation());
-        historyRepo.save(history);
+        if(songSingleRequest.getInformation() != null && !"Portal".equals(songSingleRequest.getInformation().getDeviceType())){
+            TransactionHistory history = new TransactionHistory(gson.toJson(songSingleRequest), EventAction.SEARCH_SONG_BY_SINGLE_QUERY);
+            history.setInformation(songSingleRequest.getInformation());
+            historyRepo.save(history);
+        }
 
         if(filter == null) return pageToDto(songRepository.findAll(pageable));
 
@@ -81,9 +77,11 @@ public class SongServiceImpl implements SongService {
         PageRequest pageable = CustomCommon.getPageable(songRequest.getPage());
         List<BooleanExpression> filters = getQuery(songRequest);
 
-        TransactionHistory history = new TransactionHistory(gson.toJson(songRequest), EventAction.SEARCH_SONG_ADVANCE);
-        history.setInformation(songRequest.getInformation());
-        historyRepo.save(history);
+        if(songRequest.getInformation() != null && !"Portal".equals(songRequest.getInformation().getDeviceType())){
+            TransactionHistory history = new TransactionHistory(gson.toJson(songRequest), EventAction.SEARCH_SONG_ADVANCE);
+            history.setInformation(songRequest.getInformation());
+            historyRepo.save(history);
+        }
 
         if(filters.isEmpty()){
             return pageToDto(songRepository.findAll(pageable));

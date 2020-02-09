@@ -1,12 +1,10 @@
 package com.music.kevinmusic.filter;
 
 import com.music.kevinmusic.domain.TransactionHistory;
+import com.music.kevinmusic.enums.EventAction;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.PathMetadataFactory;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 
 import java.util.Date;
 
@@ -16,7 +14,7 @@ public class QTransactionHistory extends EntityPathBase<TransactionHistory> {
   public final NumberPath<Long> id;
   public final StringPath payload;
   public final StringPath information;
-  public final StringPath eventAction;
+  public final EnumPath<EventAction> eventAction;
   public final DateTimePath<Date> transactionDate;
 
   public QTransactionHistory(String variable) {
@@ -25,7 +23,7 @@ public class QTransactionHistory extends EntityPathBase<TransactionHistory> {
     this.id = this.createNumber("id", Long.class);
     this.payload = this.createString("payload");
     this.information = this.createString("information");
-    this.eventAction = this.createString("eventAction");
+    this.eventAction = this.createEnum("eventAction", EventAction.class);
     this.transactionDate = this.createDateTime("transactionDate", Date.class);
 
   }
@@ -36,7 +34,7 @@ public class QTransactionHistory extends EntityPathBase<TransactionHistory> {
     this.id = this.createNumber("id", Long.class);
     this.payload = this.createString("payload");
     this.information = this.createString("information");
-    this.eventAction = this.createString("eventAction");
+    this.eventAction = this.createEnum("eventAction", EventAction.class);
     this.transactionDate = this.createDateTime("transactionDate", Date.class);
   }
 }

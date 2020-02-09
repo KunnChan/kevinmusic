@@ -67,8 +67,8 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
             Date midnightDayAfterEndDate = Date.from(localDateTime.plusDays(1L).toInstant(ZoneOffset.UTC));
             filters.add(historyQuery.transactionDate.before(midnightDayAfterEndDate));
         }
-        if(CustomCommon.isNotNull(request.getEventAction())){
-            filters.add(historyQuery.eventAction.equalsIgnoreCase(request.getEventAction()));
+        if(null != request.getEventAction()){
+            filters.add(historyQuery.eventAction.eq(request.getEventAction()));
         }
         if(CustomCommon.isNotNull(request.getPayload())){
             filters.add(historyQuery.payload.likeIgnoreCase(request.getPayload()));

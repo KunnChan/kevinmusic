@@ -1,15 +1,10 @@
 package com.music.kevinmusic.service.impl;
 
-import com.google.gson.Gson;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Feedback;
-import com.music.kevinmusic.domain.Information;
-import com.music.kevinmusic.domain.TransactionHistory;
-import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QFeedback;
 import com.music.kevinmusic.repository.FeedbackRepository;
-import com.music.kevinmusic.repository.TransactionHistoryRepository;
 import com.music.kevinmusic.request.FeedbackRequest;
 import com.music.kevinmusic.request.Notification;
 import com.music.kevinmusic.service.FeedbackService;
@@ -33,16 +28,12 @@ import java.util.List;
 public class FeedbackServiceImpl implements FeedbackService {
 
     private final FeedbackRepository repository;
-    private final TransactionHistoryRepository historyRepository;
     private final NotificationService notificationService;
-    private Gson gson;
 
     @Autowired
-    public FeedbackServiceImpl(FeedbackRepository repository, TransactionHistoryRepository historyRepository, NotificationService notificationService) {
+    public FeedbackServiceImpl(FeedbackRepository repository, NotificationService notificationService) {
         this.repository = repository;
-        this.historyRepository = historyRepository;
         this.notificationService = notificationService;
-        gson = new Gson();
     }
 
     @Override
@@ -68,10 +59,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Transactional
     @Override
-    public Feedback saveOrUpdate(Feedback feedback, Information information) {
-
-        TransactionHistory history = new TransactionHistory(gson.toJson(feedback), EventAction.CREATE_FEEDBACK);
-        history.setInformation(information);
+    public Feedback saveOrUpdate(Feedback feedback) {
 
         try{
             String title = feedback.getName() + " : " + feedback.getEmailOrphone();
@@ -80,7 +68,6 @@ public class FeedbackServiceImpl implements FeedbackService {
             log.error("Sending Mail error {} ", ex);
         }
 
-        historyRepository.save(history);
         return repository.save(feedback);
     }
 

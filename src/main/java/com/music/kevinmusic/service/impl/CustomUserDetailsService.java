@@ -32,6 +32,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new UserDetailsImpl(found);
         }else if(found.getActivationStatus().equals(ActivationStatus.PENDING)) {
             throw new NotFoundException( username + " User Status is Pending");
+        }else if(found.getActivationStatus().equals(ActivationStatus.INACTIVE)) {
+            throw new NotFoundException( username + " User Status is Inactive");
         }else if(found.getActivationStatus().equals(ActivationStatus.BLOCKED)) {
             throw new NotFoundException( username + " User Status is Block");
         }else{

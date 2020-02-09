@@ -9,14 +9,13 @@ import com.music.kevinmusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-@Component
+//@Component
 public class AppBootStrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
@@ -59,6 +58,6 @@ public class AppBootStrap implements ApplicationListener<ContextRefreshedEvent> 
         list.add(user);
         list.add(admin);
 
-        userService.saveAll(list);
+   //     userService.saveAll(list);
     }
 }

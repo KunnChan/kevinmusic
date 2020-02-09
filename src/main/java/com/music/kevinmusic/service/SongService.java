@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SongService {
 
-    Song getSongById(Long id, Information information);
+    Song getSongById(Long id);
 
     SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest);
 
