@@ -13,7 +13,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/zone/user")
 @Slf4j
 public class UserController {
 
@@ -24,21 +23,21 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/zone/user/{id}")
     public User get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user id " + id);
         return userService.getUserById(id);
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/shield/user/username/{username}")
     public User getByUsername(@PathVariable String username, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("get by username " + username);
         return userService.getUserByUsername(username);
     }
 
-    @PostMapping("query")
+    @PostMapping("/zone/userquery")
     public Page<User> get(@RequestBody UserRequest userRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
@@ -46,7 +45,7 @@ public class UserController {
         return userService.getFilter(userRequest);
     }
 
-    @PostMapping("save")
+    @PostMapping("/user/save")
     public User saveOrUpdate(@RequestBody UserCommand userCommand,
                              @RequestHeader MultiValueMap<String, String> headers){
 

@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -46,5 +47,7 @@ public class User extends StatusEntity {
     private Set<Role> roles;
 
     private Double point = 0d;
+
+    private Date dob;
 
 }

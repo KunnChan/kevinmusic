@@ -1,6 +1,5 @@
 package com.music.kevinmusic.service.impl;
 
-import com.google.gson.Gson;
 import com.music.kevinmusic.command.AlbumCommand;
 import com.music.kevinmusic.command.AlbumDto;
 import com.music.kevinmusic.command.AlbumPageDto;
@@ -29,12 +28,10 @@ public class AlbumServiceImpl implements AlbumService {
 
     private final AlbumRepository albumRepository;
     private final SongRepository songRepository;
-    private Gson gson;
 
     public AlbumServiceImpl(AlbumRepository albumRepository, SongRepository songRepository) {
         this.albumRepository = albumRepository;
         this.songRepository = songRepository;
-        this.gson = new Gson();
     }
 
     @Override

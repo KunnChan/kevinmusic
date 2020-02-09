@@ -59,15 +59,13 @@ public class SongServiceImpl implements SongService {
 
         }
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
+        if(filter == null) return pageToDto(songRepository.findAll(pageable));
 
         if(songSingleRequest.getInformation() != null && !"Portal".equals(songSingleRequest.getInformation().getDeviceType())){
             TransactionHistory history = new TransactionHistory(gson.toJson(songSingleRequest), EventAction.SEARCH_SONG_BY_SINGLE_QUERY);
             history.setInformation(songSingleRequest.getInformation());
             historyRepo.save(history);
         }
-
-        if(filter == null) return pageToDto(songRepository.findAll(pageable));
-
         return pageToDto(songRepository.findAll(filter, pageable));
     }
 
@@ -77,14 +75,14 @@ public class SongServiceImpl implements SongService {
         PageRequest pageable = CustomCommon.getPageable(songRequest.getPage());
         List<BooleanExpression> filters = getQuery(songRequest);
 
+        if(filters.isEmpty()){
+            return pageToDto(songRepository.findAll(pageable));
+        }
+
         if(songRequest.getInformation() != null && !"Portal".equals(songRequest.getInformation().getDeviceType())){
             TransactionHistory history = new TransactionHistory(gson.toJson(songRequest), EventAction.SEARCH_SONG_ADVANCE);
             history.setInformation(songRequest.getInformation());
             historyRepo.save(history);
-        }
-
-        if(filters.isEmpty()){
-            return pageToDto(songRepository.findAll(pageable));
         }
 
         BooleanExpression filterExpression = filters.get(0);
@@ -195,10 +193,7 @@ public class SongServiceImpl implements SongService {
 
     @Transactional
     @Override
-    public List<SongDto> getSongByAlbumId(Long albumId, Information information) {
-        TransactionHistory history = new TransactionHistory("Album Id : " + albumId, EventAction.GET_SONG_BY_ALBUMID);
-        history.setInformation(information);
-        historyRepo.save(history);
+    public List<SongDto> getSongByAlbumId(Long albumId) {
 
         return toDto(songRepository.findAllByAlbumId(albumId));
     }

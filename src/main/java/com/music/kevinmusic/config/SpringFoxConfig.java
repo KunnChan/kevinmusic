@@ -25,8 +25,8 @@ public class SpringFoxConfig {
     }
 
     private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("Play My Song Portal")
-                .contact(new Contact("Kevin Music", "https://kunnchan.github.io/", "kunnchan3@gmail.com"))
+        return new ApiInfoBuilder().title("Rythm Portal")
+                .contact(new Contact("Rythm Api", "https://kunnchan.github.io/", "kunnchan3@gmail.com"))
                 .version("1.0.0")
                 .build();
     }

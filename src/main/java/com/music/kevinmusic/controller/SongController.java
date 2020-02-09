@@ -39,8 +39,7 @@ public class SongController {
                                     @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("get song by albumId : {}, ", albumId);
-        Information information = CustomCommon.getBrowserInformation(headers);
-        return songService.getSongByAlbumId(albumId, information);
+        return songService.getSongByAlbumId(albumId);
     }
 
     @PostMapping("/song/q")

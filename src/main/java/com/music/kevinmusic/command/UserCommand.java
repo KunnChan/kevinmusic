@@ -5,6 +5,7 @@ import com.music.kevinmusic.enums.ActivationStatus;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +21,9 @@ public class UserCommand {
     private String password;
     private String phone;
     private String email;
-    private Double point;
+    private Double point = 0D;
+    private Date dob;
 
-    private ActivationStatus activationStatus;
+    private ActivationStatus activationStatus = ActivationStatus.ACTIVE;
     private Set<Role> roles = new HashSet<>();
 }

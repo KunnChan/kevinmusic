@@ -29,8 +29,8 @@ public class CustomCommon {
         String userAgent = headers.getFirst("user-agent");
         String host = headers.getFirst("host");
         String acceptLanguage = headers.getFirst("accept-language");
-        String deviceName = headers.getFirst("deviceName"); // this will be samsung or ios or something
-        String deviceId = headers.getFirst("deviceId");  // this will be imei
+        String deviceName = headers.getFirst("device-name"); // this will be samsung or ios or something
+        String deviceId = headers.getFirst("device-id");  // this will be imei
         String latLon = headers.getFirst("location");
         String deviceType = headers.getFirst("device-type"); // this field represent MOBILE or WEB
         return new Information(userAgent, acceptLanguage, host, latLon, deviceName, deviceId, deviceType);
