@@ -93,7 +93,7 @@ public class SongController {
         return songService.addReaction(songCommand, information);
     }
 
-    @PostMapping("/song/download")
+    @PostMapping("/shield/song/download")
     public Song addDownload(@RequestBody SongCommand songCommand,
                             @RequestHeader MultiValueMap<String, String> headers){
 
