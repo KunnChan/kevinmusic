@@ -26,14 +26,26 @@ public class CustomCommon {
     }
 
     public static Information getBrowserInformation(MultiValueMap<String, String> headers){
-        String userAgent = headers.getFirst("user-agent");
+        String osVersion = headers.getFirst("os-version");
         String host = headers.getFirst("host");
-        String acceptLanguage = headers.getFirst("accept-language");
-        String deviceName = headers.getFirst("device-name"); // this will be samsung or ios or something
-        String deviceId = headers.getFirst("device-id");  // this will be imei
-        String latLon = headers.getFirst("location");
-        String deviceType = headers.getFirst("device-type"); // this field represent MOBILE or WEB
-        return new Information(userAgent, acceptLanguage, host, latLon, deviceName, deviceId, deviceType);
+        String model = headers.getFirst("model");
+        String manufacturer = headers.getFirst("manufacturer");
+        String platform = headers.getFirst("platform");
+        String uuid = headers.getFirst("uuid");
+        String latLon = headers.getFirst("latlon");
+        String deviceType = headers.getFirst("device-type");
+
+        Information information = new Information();
+        information.setDeviceType(deviceType);
+        information.setOsVersion(osVersion);
+        information.setHost(host);
+        information.setModel(model);
+        information.setManufacturer(manufacturer);
+        information.setPlatform(platform);
+        information.setUuid(uuid);
+        information.setLatLon(latLon);
+
+        return information;
     }
 
     public static boolean isNotNull(String str){

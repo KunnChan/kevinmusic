@@ -19,23 +19,13 @@ public class Information {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userAgent;
-    private String acceptLanguage;
+    private String osVersion;
+    private String model;
     private String host;
     private String latLon;
-    private String deviceName;
-    private String deviceId;
-
+    private String manufacturer;
+    private String platform;
+    private String uuid;
     private String deviceType;
 
-    public Information(String userAgent, String acceptLanguage, String host, String latLon,
-                       String deviceName, String deviceId, String deviceType) {
-        this.userAgent = userAgent;
-        this.acceptLanguage = acceptLanguage;
-        this.host = host;
-        this.latLon = latLon;
-        this.deviceName = deviceName;
-        this.deviceId = deviceId;
-        this.deviceType = deviceType;
-    }
 }

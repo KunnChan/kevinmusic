@@ -47,8 +47,8 @@ public class SongController {
                            @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song specific query : {}, ", songSingleRequest);
-        songSingleRequest.setInformation(CustomCommon.getBrowserInformation(headers));
-        return songService.getFilterOneQuery(songSingleRequest);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.getFilterOneQuery(songSingleRequest, information);
     }
 
     @PostMapping("/song/query")
@@ -56,8 +56,8 @@ public class SongController {
                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song advance query => {}", songRequest);
-        songRequest.setInformation(CustomCommon.getBrowserInformation(headers));
-        return songService.getFilter(songRequest);
+        Information information = CustomCommon.getBrowserInformation(headers);
+        return songService.getFilter(songRequest, information);
     }
 
     @PostMapping("/shield/song/save")

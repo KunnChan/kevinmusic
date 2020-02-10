@@ -1,6 +1,5 @@
 package com.music.kevinmusic.request;
 
-import com.music.kevinmusic.domain.Information;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,8 +14,6 @@ public class SongRequest {
     private String album;
     private String language;
     private String info;
-
-    private Information information;
 
     private PageInfo page;
 }

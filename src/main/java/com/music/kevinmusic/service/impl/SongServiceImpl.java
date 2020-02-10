@@ -48,7 +48,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     @Transactional
-    public SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest) {
+    public SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest, Information information) {
 
         PageRequest pageable;
         if(songSingleRequest.getIsPopular()){
@@ -61,9 +61,9 @@ public class SongServiceImpl implements SongService {
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
         if(filter == null) return pageToDto(songRepository.findAll(pageable));
 
-        if(songSingleRequest.getInformation() != null && !"Portal".equals(songSingleRequest.getInformation().getDeviceType())){
+        if(information != null && !"Portal".equals(information.getDeviceType())){
             TransactionHistory history = new TransactionHistory(gson.toJson(songSingleRequest), EventAction.SEARCH_SONG_BY_SINGLE_QUERY);
-            history.setInformation(songSingleRequest.getInformation());
+            history.setInformation(information);
             historyRepo.save(history);
         }
         return pageToDto(songRepository.findAll(filter, pageable));
@@ -71,7 +71,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     @Transactional
-    public SongPageDto getFilter(SongRequest songRequest) {
+    public SongPageDto getFilter(SongRequest songRequest, Information information) {
         PageRequest pageable = CustomCommon.getPageable(songRequest.getPage());
         List<BooleanExpression> filters = getQuery(songRequest);
 
@@ -79,9 +79,9 @@ public class SongServiceImpl implements SongService {
             return pageToDto(songRepository.findAll(pageable));
         }
 
-        if(songRequest.getInformation() != null && !"Portal".equals(songRequest.getInformation().getDeviceType())){
+        if(information != null && !"Portal".equals(information.getDeviceType())){
             TransactionHistory history = new TransactionHistory(gson.toJson(songRequest), EventAction.SEARCH_SONG_ADVANCE);
-            history.setInformation(songRequest.getInformation());
+            history.setInformation(information);
             historyRepo.save(history);
         }
 

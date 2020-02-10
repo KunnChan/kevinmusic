@@ -14,9 +14,9 @@ public interface SongService {
 
     Song getSongById(Long id);
 
-    SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest);
+    SongPageDto getFilterOneQuery(SongSingleRequest songSingleRequest, Information information);
 
-    SongPageDto getFilter(SongRequest songRequest);
+    SongPageDto getFilter(SongRequest songRequest, Information information);
 
     Song saveOrUpdate(SongCommand songCommand, Information information);
 
