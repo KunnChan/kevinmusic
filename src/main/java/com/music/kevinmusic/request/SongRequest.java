@@ -1,8 +1,10 @@
 package com.music.kevinmusic.request;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+@Builder
 @Data
 @ToString
 public class SongRequest {

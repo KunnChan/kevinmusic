@@ -13,7 +13,7 @@ import java.util.Date;
 public class QUser extends EntityPathBase<Song> {
   public static final QUser userEntity = new QUser("user");
 
-  public final NumberPath<Long> id;
+  public final NumberPath<Integer> id;
   public final StringPath username;
   public final StringPath name;
   public final StringPath note;
@@ -28,7 +28,7 @@ public class QUser extends EntityPathBase<Song> {
   public QUser(String variable) {
     super(Song.class, PathMetadataFactory.forVariable(variable));
 
-    this.id = this.createNumber("id", Long.class);
+    this.id = this.createNumber("id", Integer.class);
     this.username = this.createString("username");
     this.name = this.createString("name");
     this.note = this.createString("note");
@@ -44,7 +44,7 @@ public class QUser extends EntityPathBase<Song> {
 
   public QUser(PathMetadata metadata) {
     super(Song.class, metadata);
-    this.id = this.createNumber("id", Long.class);
+    this.id = this.createNumber("id", Integer.class);
     this.username = this.createString("username");
     this.name = this.createString("name");
     this.note = this.createString("note");

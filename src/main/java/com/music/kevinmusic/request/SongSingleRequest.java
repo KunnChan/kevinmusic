@@ -1,14 +1,18 @@
 package com.music.kevinmusic.request;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
+@Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class SongSingleRequest {
 
     private String query;
     private Long albumId;
-    private Boolean isPopular = Boolean.FALSE;
+
+    @Builder.Default
+    private Boolean isPopular = false;
     private PageInfo page;
 }

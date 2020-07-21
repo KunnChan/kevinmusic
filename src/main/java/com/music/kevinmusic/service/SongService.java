@@ -33,4 +33,6 @@ public interface SongService {
     Song addDownload(SongCommand songCommand, Information information);
 
     List<SongDto> getSongByAlbumId(Long albumId);
+
+    void deleteSongById(Long id);
 }

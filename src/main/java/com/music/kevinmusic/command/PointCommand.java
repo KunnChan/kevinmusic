@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 public class PointCommand {
 
-    private Long userId;
+    private Integer userId;
     private Double point = 0d;
     private String desc;
     private Double pointAfterModify = 0d;

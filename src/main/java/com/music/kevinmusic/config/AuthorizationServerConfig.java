@@ -75,7 +75,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        log.error("clientid is {} is and secret is {} ", clientId, clientSecret);
+        log.error("clientid is {} and secret is {} ", clientId, clientSecret);
 
         clients
                 .inMemory()

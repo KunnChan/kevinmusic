@@ -8,9 +8,11 @@ import com.music.kevinmusic.domain.Information;
 import com.music.kevinmusic.domain.Song;
 import com.music.kevinmusic.request.SongRequest;
 import com.music.kevinmusic.request.SongSingleRequest;
+import com.music.kevinmusic.security.perms.SongPermission;
 import com.music.kevinmusic.service.SongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +29,23 @@ public class SongController {
         this.songService = songService;
     }
 
+    @SongPermission.Read
     @GetMapping("/song/{id}")
-    public Song get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
+    public Song getSongById(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song id " + id);
         return songService.getSongById(id);
     }
 
+    @SongPermission.Delete
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/song/{id}")
+    public void deleteSongById(@PathVariable Long id){
+        log.info("song id " + id);
+        songService.deleteSongById(id);
+    }
+
+    @SongPermission.Read
     @GetMapping("/song/album/{albumId}")
     public List<SongDto> getByAlbum(@PathVariable Long albumId,
                                     @RequestHeader MultiValueMap<String, String> headers){
@@ -42,8 +54,9 @@ public class SongController {
         return songService.getSongByAlbumId(albumId);
     }
 
+    @SongPermission.Read
     @PostMapping("/song/q")
-    public SongPageDto get(@RequestBody SongSingleRequest songSingleRequest,
+    public SongPageDto getSongSingleQuery(@RequestBody SongSingleRequest songSingleRequest,
                            @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song specific query : {}, ", songSingleRequest);
@@ -51,8 +64,9 @@ public class SongController {
         return songService.getFilterOneQuery(songSingleRequest, information);
     }
 
+    @SongPermission.Read
     @PostMapping("/song/query")
-    public SongPageDto get(@RequestBody SongRequest songRequest,
+    public SongPageDto getSongAdvanceQuery(@RequestBody SongRequest songRequest,
                           @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("song advance query => {}", songRequest);
@@ -60,6 +74,8 @@ public class SongController {
         return songService.getFilter(songRequest, information);
     }
 
+   // @PreAuthorize("hasAnyAuthority('song.create', 'song.update')")
+    @SongPermission.Create @SongPermission.Update
     @PostMapping("/shield/song/save")
     public Song saveOrUpdate(@RequestBody SongCommand songCommand,
                              @RequestHeader MultiValueMap<String, String> headers){

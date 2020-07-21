@@ -1,9 +1,11 @@
 package com.music.kevinmusic.request;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
+@Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class PageInfo {
 

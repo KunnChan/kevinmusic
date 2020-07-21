@@ -1,6 +1,6 @@
 package com.music.kevinmusic.command;
 
-import com.music.kevinmusic.domain.Role;
+import com.music.kevinmusic.domain.security.Role;
 import com.music.kevinmusic.enums.ActivationStatus;
 import lombok.Data;
 import lombok.ToString;

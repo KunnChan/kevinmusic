@@ -11,4 +11,8 @@ import java.util.List;
 public interface SongRepository extends PagingAndSortingRepository<Song, Long>, QuerydslPredicateExecutor<Song> {
 
     List<Song> findAllByAlbumId(Long id);
+
+//    @Query("select o from BeerOrder o where o.id =?1 and " +
+//            "(true = :#{hasAuthority('order.read')} or o.customer.id = ?#{principal?.customer?.id})")
+//    BeerOrder findOrderByIdSecure(UUID orderId);
 }

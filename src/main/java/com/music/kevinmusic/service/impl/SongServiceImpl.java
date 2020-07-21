@@ -56,7 +56,6 @@ public class SongServiceImpl implements SongService {
 
         }else{
             pageable = CustomCommon.getPageable(songSingleRequest.getPage());
-
         }
         BooleanExpression filter = getQuery(songSingleRequest.getQuery());
         if(filter == null) return pageToDto(songRepository.findAll(pageable));
@@ -198,6 +197,11 @@ public class SongServiceImpl implements SongService {
         return toDto(songRepository.findAllByAlbumId(albumId));
     }
 
+    @Override
+    public void deleteSongById(Long id) {
+        songRepository.deleteById(id);
+    }
+
     @Transactional
     @Override
     public Song addReaction(SongCommand songCommand, Information information) {
@@ -325,6 +329,7 @@ public class SongServiceImpl implements SongService {
         song.setPhotoLink(songCommand.getPhotoLink());
         song.setInformation(songCommand.getInformation());
         song.setActivationStatus(ActivationStatus.ACTIVE);
+
         if(CustomCommon.isNotNull(songCommand.getLyrics())){
             song.setLyrics(new Lyrics(songCommand.getLyrics()));
         }

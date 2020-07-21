@@ -61,7 +61,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/oauth/token").permitAll()
                 .antMatchers("/zone/**").access("hasAuthority('ADMIN')")
                 .antMatchers("/shield/**").authenticated()
                 .and()

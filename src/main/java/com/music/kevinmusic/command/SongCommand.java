@@ -2,13 +2,17 @@ package com.music.kevinmusic.command;
 
 import com.music.kevinmusic.domain.DownloadLink;
 import com.music.kevinmusic.enums.UserReaction;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @ToString
 public class SongCommand {

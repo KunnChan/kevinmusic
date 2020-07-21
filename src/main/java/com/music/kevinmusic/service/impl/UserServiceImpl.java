@@ -5,14 +5,17 @@ import com.music.kevinmusic.command.PointCommand;
 import com.music.kevinmusic.command.UserCommand;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
-import com.music.kevinmusic.domain.Role;
 import com.music.kevinmusic.domain.TransactionHistory;
-import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.domain.security.Authority;
+import com.music.kevinmusic.domain.security.Role;
+import com.music.kevinmusic.domain.security.User;
 import com.music.kevinmusic.enums.EventAction;
 import com.music.kevinmusic.exception.NotFoundException;
 import com.music.kevinmusic.filter.QUser;
 import com.music.kevinmusic.repository.TransactionHistoryRepository;
-import com.music.kevinmusic.repository.UserRepository;
+import com.music.kevinmusic.repository.security.AuthorityRepository;
+import com.music.kevinmusic.repository.security.RoleRepository;
+import com.music.kevinmusic.repository.security.UserRepository;
 import com.music.kevinmusic.request.UserRequest;
 import com.music.kevinmusic.service.UserService;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -32,14 +35,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final TransactionHistoryRepository historyRepo;
+    private final RoleRepository roleRepository;
+    private final AuthorityRepository authorityRepository;
     private ModelMapper modelMapper;
     private Gson gson;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder, TransactionHistoryRepository historyRepo) {
+    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder, TransactionHistoryRepository historyRepo, RoleRepository roleRepository, AuthorityRepository authorityRepository) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.historyRepo = historyRepo;
+        this.roleRepository = roleRepository;
+        this.authorityRepository = authorityRepository;
         modelMapper = new ModelMapper();
         gson = new Gson();
     }
@@ -58,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User getUserById(Long id) {
+    public User getUserById(Integer id) {
         return userRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("User is not found for id "+ id));
     }
@@ -102,7 +109,10 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             if(userCommand.getRoles().isEmpty()){
-                user.setRoles(new HashSet<>(Arrays.asList(new Role("USER"))));
+                Authority songRead = authorityRepository.save(Authority.builder().permission("song.read").build());
+                Role userRole = roleRepository.save(Role.builder().name("USER").build());
+                userRole.setAuthorities(new HashSet<>(Arrays.asList(songRead)));
+                user.setRoles(new HashSet<>(Arrays.asList(userRole)));
             }else{
                 user.setRoles(userCommand.getRoles());
             }
@@ -174,7 +184,7 @@ public class UserServiceImpl implements UserService {
 
         QUser qUser = QUser.userEntity;
         List<BooleanExpression> filters = new ArrayList<>();
-        Long id = userRequest.getId();
+        Integer id = userRequest.getId();
         if(id != null && !"".equals(id)){
             filters.add(qUser.id.eq(id));
         }

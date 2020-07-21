@@ -3,12 +3,13 @@ package com.music.kevinmusic.controller;
 import com.music.kevinmusic.command.UserCommand;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
-import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.domain.security.User;
 import com.music.kevinmusic.request.UserRequest;
 import com.music.kevinmusic.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasAuthority('order.read') OR " +
+            "hasAuthority('customer.order.read') " +
+            " AND @beerOrderAuthenticationManger.customerIdMatches(authentication, #id )")
     @GetMapping("/zone/user/{id}")
-    public User get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
+    public User get(@PathVariable Integer id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user id " + id);
         return userService.getUserById(id);

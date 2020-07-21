@@ -3,7 +3,7 @@ package com.music.kevinmusic.controller;
 import com.music.kevinmusic.command.PointCommand;
 import com.music.kevinmusic.common.CustomCommon;
 import com.music.kevinmusic.domain.Information;
-import com.music.kevinmusic.domain.User;
+import com.music.kevinmusic.domain.security.User;
 import com.music.kevinmusic.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.MultiValueMap;
@@ -20,7 +20,7 @@ public class PointController {
     }
 
     @GetMapping("/shield/user/{id}")
-    public User get(@PathVariable Long id, @RequestHeader MultiValueMap<String, String> headers){
+    public User get(@PathVariable Integer id, @RequestHeader MultiValueMap<String, String> headers){
 
         log.info("user id " + id);
         return userService.getUserById(id);
